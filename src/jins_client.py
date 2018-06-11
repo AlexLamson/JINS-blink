@@ -1,5 +1,6 @@
 # built to connect with and read data from JINS MEME Data Logger
 
+import sys
 import socket
 
 s = socket.socket()
@@ -31,8 +32,12 @@ if __name__ == '__main__':
 	host = ''
 	port = 0
 
-	host = input('Enter server\'s IP address: ')
-	port = int( input('Enter server\'s port: ') )
+	if len(sys.argv) == 3:
+		host = sys.argv[1]
+		port = int(sys.argv[2])
+	else:
+		host = input('Enter server\'s IP address: ')
+		port = int( input('Enter server\'s port: ') )
 
 	initialize_connection(host, port)
 
