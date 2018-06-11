@@ -1,7 +1,9 @@
 # built to connect with and read data from JINS MEME Data Logger
+# set JINS measure mode to "Full" - frame components will be in this order: NUM,DATE,ACC_X,ACC_Y,ACC_Z,GYRO_X,GYRO_Y,GYRO_Z,EOG_L,EOG_R,EOG_H,EOG_V
 
 import sys
 import socket
+from datetime import datetime
 
 s = socket.socket()
 
@@ -26,13 +28,22 @@ def read_forever():
 			new_frame_raw = read_in_buffer[:-2].decode('utf-8')
 			new_frame = parse_frame(new_frame_raw)
 			history += [new_frame]
-			print('\t'.join(new_frame))
+
+			# turn datetime into just clock time for printing
+			printable = new_frame[:]
+			printable[1] = datetime.strftime(printable[1], '%H:%M:%S.%f')[:-4]
+			print('\t'.join(printable))
 
 			read_in_buffer = b''
 
 def parse_frame(frame):
 	# ignore the initial 'artifact' field since it is always empty
 	elements = frame[1:].split(',')
+
+	# parse time
+	timestring = elements[1]
+	elements[1] = datetime.strptime(timestring, '%Y/%m/%d %H:%M:%S.%f')
+	# could convert to unix time, or not
 
 	return elements
 
