@@ -13,13 +13,17 @@ history = []
 
 def initialize_connection(host, port):
 	s.connect( (host, port) )
-
+	
 def read_forever():
+	read_until(lambda: False)
+
+# reads until the condition is true
+def read_until(condition_function):
 	global read_in_buffer, history
 
 	print('Looking for input...')
 
-	while True:
+	while not condition_function():
 		new_char = s.recv(1)
 		read_in_buffer += new_char
 
