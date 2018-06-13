@@ -29,6 +29,7 @@ def combine_data(jins_df, of_df, delay):
 
 	# find jins frame based on delay
 	while jins_df['TIME'][jins_frame] < delay:
+		jins_df.drop(jins_frame, inplace=True)
 		jins_frame += 1
 
 	timestamp = jins_df['TIME'][jins_frame]
@@ -43,7 +44,7 @@ def combine_data(jins_df, of_df, delay):
 			jins_df.at[jins_frame, column] = np.interp(timestamp, of_df['timestamp'], of_df['AU45_r'])
 		
 		jins_frame += 1
-		timestamp += jins_df['TIME'][1] # time resolution
+		timestamp = jins_df['TIME'][jins_frame] # time resolution
 		if of_df['timestamp'][of_frame] < timestamp:
 			of_frame += 1
 
