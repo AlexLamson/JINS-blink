@@ -14,9 +14,10 @@ def time_column_to_delta(df):
 	# find the second change
 	while num == df['TIME'][i][-1]:
 		i += 1
+	# the number of frames inbetween the changes gives you the resolution
 	res = 0.1 / (i - start)
 
-	# the data is evenly spaced, so just apply the res time delta all the way down
+	# the data is evenly spaced, so just apply the res time all the way down
 	for i in range(df.shape[0]):
 		df.at[i, 'TIME'] = i * res
 
@@ -30,7 +31,7 @@ def combine_data(jins_df, of_df, delay):
 		jins_frame += 1
 
 	timestamp = jins_df['TIME'][jins_frame]
-	# find of frame that just preceeds timestamp
+	# find OF frame that just preceeds timestamp
 	while timestamp < of_df['timestamp'][of_frame+1]:
 		of_frame += 1
 
@@ -63,14 +64,17 @@ if __name__ == '__main__':
 	openface_df = pd.read_csv(openface_fname)
 	print('done loading')
 
+	jins_df.rename( columns = {'DATE': 'TIME'}, inplace=True ) # rename the date column to time so it makes sense
 	openface_df.columns = openface_df.columns.str.strip() # columns have leading space, get rid of it
 
 	openface_delay = 2.0 # seconds between the time JINS began recording and openface began recording
 
 	# cull openface data
 	# keep time, AU45_r (blink regression)
-	# note the leading spaces on col names are intentional, this is how 
-	openface_cols_to_drop = ['frame', 'face_id', 'confidence', 'success', 'AU01_r', 'AU02_r', 'AU04_r', 'AU05_r', 'AU06_r', 'AU07_r', 'AU09_r', 'AU10_r', 'AU12_r', 'AU14_r', 'AU15_r', 'AU17_r', 'AU20_r', 'AU23_r', 'AU25_r', 'AU26_r', 'AU01_c', 'AU02_c', 'AU04_c', 'AU05_c', 'AU06_c', 'AU07_c', 'AU09_c', 'AU10_c', 'AU12_c', 'AU14_c', 'AU15_c', 'AU17_c', 'AU20_c', 'AU23_c', 'AU25_c', 'AU26_c', 'AU28_c', 'AU45_c']
+	openface_cols_to_drop = ['frame', 'face_id', 'confidence', 'success', 'AU01_r', 'AU02_r', 'AU04_r', 'AU05_r',
+		'AU06_r', 'AU07_r', 'AU09_r', 'AU10_r', 'AU12_r', 'AU14_r', 'AU15_r', 'AU17_r', 'AU20_r', 'AU23_r', 'AU25_r',
+		'AU26_r', 'AU01_c', 'AU02_c', 'AU04_c', 'AU05_c', 'AU06_c', 'AU07_c', 'AU09_c', 'AU10_c', 'AU12_c', 'AU14_c',
+		'AU15_c', 'AU17_c', 'AU20_c', 'AU23_c', 'AU25_c', 'AU26_c', 'AU28_c', 'AU45_c']
 	openface_df.drop(openface_cols_to_drop, axis = 1, inplace=True)
 
 	# cull jins data
@@ -78,12 +82,10 @@ if __name__ == '__main__':
 	jins_cols_to_drop = ['ARTIFACT', 'NUM', 'ACC_X', 'ACC_Y', 'ACC_Z', 'GYRO_X', 'GYRO_Y', 'GYRO_Z']
 	jins_df.drop(jins_cols_to_drop, axis = 1, inplace=True)
 
-	jins_df.rename( columns = {'DATE': 'TIME'}, inplace=True ) # rename the date column to time so it makes sense
-
 	time_column_to_delta(jins_df)
 
 	print('combining')
-	combine_data(jins_df, openface_df, openface_delay) # modifies the ji
+	combine_data(jins_df, openface_df, openface_delay)
 
 	print('saving combined data')
 	jins_df.to_csv(output_fname)
