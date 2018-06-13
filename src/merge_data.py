@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 # this function is built very specifically for turning the jins time column into deltas
 def time_column_to_delta(df):
@@ -35,18 +36,11 @@ def combine_data(jins_df, of_df, delay):
 	while timestamp < of_df['timestamp'][of_frame+1]:
 		of_frame += 1
 
-	# doesn't actually interpolate just yet
-	def interpolate_column(df, col, index, timestamp):
-		a = 1.0
-		b = 0.0
-
-		return df[col][index] * a + df[col][index+1] * b
-
 	while jins_df.shape[0] > jins_frame and of_df.shape[0] - 1 > of_frame:
 		for column in of_df.columns:
 			if column == 'timestamp': continue
 
-			jins_df.at[jins_frame, column] = interpolate_column(of_df, column, of_frame, timestamp)
+			jins_df.at[jins_frame, column] = np.interp(timestamp, of_df['timestamp'], of_df['AU45_r'])
 		
 		jins_frame += 1
 		timestamp += jins_df['TIME'][1] # time resolution
