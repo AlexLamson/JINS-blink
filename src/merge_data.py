@@ -27,6 +27,7 @@ def time_column_to_delta(df):
 # combines jins and openface frames into the jins dataframe.
 def combine_data(jins_df, of_df, delay):
     jins_frame = 0
+    jins_size_full = jins_df.shape[0]
 
     # find jins frame based on delay
     while jins_df['TIME'][jins_frame] < delay:
@@ -34,14 +35,13 @@ def combine_data(jins_df, of_df, delay):
         jins_frame += 1
 
     last_of_time = of_df['timestamp'][of_df.shape[0] - 1]
-    while jins_df.shape[0] > jins_frame and jins_df['TIME'][jins_frame] <= last_of_time:
+    while jins_size_full > jins_frame and jins_df['TIME'][jins_frame] <= last_of_time:
         for column in of_df.columns:
             if column == 'timestamp':
                 continue
 
             # interpolate the value of the column according to jins time
             jins_df.at[jins_frame, column] = np.interp(jins_df['TIME'][jins_frame] - delay, of_df['timestamp'], of_df[column])
-
 
         jins_frame += 1
 
