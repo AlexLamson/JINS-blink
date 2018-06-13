@@ -1,3 +1,4 @@
+
 import pandas as pd
 import numpy as np
 
@@ -29,8 +30,6 @@ def load_openface(filename):
     return df
 
 
-
-
 # returns features_over_all_time
 def extract_features(line_strings):
     pass
@@ -41,14 +40,10 @@ def get_data():
     pass
 
 
-
 def extract_window(features_over_all_time, index):
     pass
-
 
 
 df_jins = load_jins("data1_jins.csv")
 
 # df_openface = load_openface("data1_openface.csv")
-
-
