@@ -26,7 +26,6 @@ def time_column_to_delta(df):
 
 # combines jins and openface frames into the jins dataframe.
 def combine_data(jins_df, of_df, delay):
-    of_frame = 0  # helps with interpolating
     jins_frame = 0
 
     # find jins frame based on delay
@@ -34,22 +33,17 @@ def combine_data(jins_df, of_df, delay):
         jins_df.drop(jins_frame, inplace=True)
         jins_frame += 1
 
-    timestamp = jins_df['TIME'][jins_frame]
-    # find OF frame that just preceeds timestamp
-    while timestamp < of_df['timestamp'][of_frame+1]:
-        of_frame += 1
-
-    while jins_df.shape[0] > jins_frame and of_df.shape[0] - 1 > of_frame:
+    last_of_time = of_df['timestamp'][of_df.shape[0] - 1]
+    while jins_df.shape[0] > jins_frame and jins_df['TIME'][jins_frame] <= last_of_time:
         for column in of_df.columns:
             if column == 'timestamp':
                 continue
 
-            jins_df.at[jins_frame, column] = np.interp(timestamp, of_df['timestamp'], of_df['AU45_r'])
+            # interpolate the value of the column according to jins time
+            jins_df.at[jins_frame, column] = np.interp(jins_df['TIME'][jins_frame] - delay, of_df['timestamp'], of_df[column])
+
 
         jins_frame += 1
-        timestamp = jins_df['TIME'][jins_frame]  # time resolution
-        if of_df['timestamp'][of_frame] < timestamp:
-            of_frame += 1
 
 
 if __name__ == '__main__':
