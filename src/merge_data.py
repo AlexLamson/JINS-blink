@@ -53,12 +53,12 @@ def combine_data(jins_df, of_df, delay):
 
 
 if __name__ == '__main__':
-    jins_fname = 'blinks_data_face3/jins_20180612174521.csv'
-    openface_fname = 'blinks_data_face3/webcam_2018-06-12-13-45.csv'
-    output_fname = 'blinks_data_face3/combined.csv'
+    jins_fname = '../res/data1/jins_20180612174521.csv'
+    openface_fname = '../res/data1/webcam_2018-06-12-13-45.csv'
+    output_fname = '../res/data1/combined.csv'
 
     print('loading jins data')
-    jins_df = pd.read_csv(jins_fname)
+    jins_df = pd.read_csv(jins_fname, skiprows=5)
     print('loading openface data')
     openface_df = pd.read_csv(openface_fname)
     print('done loading')
@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
     # cull jins data
     # keep time and eog
-    jins_cols_to_drop = ['ARTIFACT', 'NUM', 'ACC_X', 'ACC_Y', 'ACC_Z', 'GYRO_X', 'GYRO_Y', 'GYRO_Z']
+    jins_cols_to_drop = ['//ARTIFACT', 'NUM', 'ACC_X', 'ACC_Y', 'ACC_Z', 'GYRO_X', 'GYRO_Y', 'GYRO_Z']
     jins_df.drop(jins_cols_to_drop, axis=1, inplace=True)
 
     time_column_to_delta(jins_df)
