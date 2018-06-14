@@ -2,22 +2,12 @@ import pandas as pd
 import numpy as np
 
 
-# this function is built very specifically for turning the jins time column into deltas
+# turns the jins time column into relative times
 def time_column_to_delta(df):
-    # only one decimal of precision is recorded for some reason, so the resolution is extrapolated
-    # find the resolution - see how long the last digit is repeated for
-    i = 0
-    num = df['TIME'][i][-1]
-    # find the first change
-    while num == df['TIME'][i][-1]:
-        i += 1
-    num = df['TIME'][i][-1]
-    start = i
-    # find the second change
-    while num == df['TIME'][i][-1]:
-        i += 1
-    # the number of frames inbetween the changes gives you the resolution
-    res = 0.1 / (i - start)
+    # find the resolution by taking the difference of the first two timestamps
+    first_time = float( jins_df['TIME'][0] [-3:] )
+    second_time = float( jins_df['TIME'][1] [-3:] )
+    res = second_time - first_time
 
     # the data is evenly spaced, so just apply the res time all the way down
     for i in range(df.shape[0]):
