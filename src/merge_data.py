@@ -3,15 +3,15 @@ import numpy as np
 
 
 # turns the jins time column into relative times
-def time_column_to_delta(df):
+def time_column_to_delta(jins_df):
     # find the resolution by taking the difference of the first two timestamps
     first_time = float( jins_df['TIME'][0] [-3:] )
     second_time = float( jins_df['TIME'][1] [-3:] )
     res = second_time - first_time
 
     # the data is evenly spaced, so just apply the res time all the way down
-    for i in range(df.shape[0]):
-        df.at[i, 'TIME'] = i * res
+    for i in range(jins_df.shape[0]):
+        jins_df.at[i, 'TIME'] = i * res
 
 
 # combines jins and openface frames into the jins dataframe.
