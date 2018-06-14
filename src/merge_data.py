@@ -1,17 +1,7 @@
+
+
 import pandas as pd
 import numpy as np
-
-
-# turns the jins time column into relative times
-def time_column_to_delta(jins_df):
-    # find the resolution by taking the difference of the first two timestamps
-    first_time = float( jins_df['TIME'][0] [-3:] )
-    second_time = float( jins_df['TIME'][1] [-3:] )
-    res = second_time - first_time
-
-    # the data is evenly spaced, so just apply the res time all the way down
-    for i in range(jins_df.shape[0]):
-        jins_df.at[i, 'TIME'] = i * res
 
 
 # combines jins and openface frames into the jins dataframe.
@@ -35,22 +25,25 @@ def combine_data(jins_df, of_df, delay):
 
         jins_frame += 1
 
+    return jins_df
 
-if __name__ == '__main__':
-    jins_fname = '../res/data1/jins_20180612174521.csv'
-    openface_fname = '../res/data1/webcam_2018-06-12-13-45.csv'
-    output_fname = '../res/data1/combined.csv'
 
-    print('loading jins data')
-    jins_df = pd.read_csv(jins_fname, skiprows=5)
-    print('loading openface data')
-    openface_df = pd.read_csv(openface_fname)
-    print('done loading')
+# turns the jins time column into relative times
+def time_column_to_delta(jins_df):
+    # find the resolution by taking the difference of the first two timestamps
+    first_time = float( jins_df['TIME'][0] [-3:] )
+    second_time = float( jins_df['TIME'][1] [-3:] )
+    res = second_time - first_time
+
+    # the data is evenly spaced, so just apply the res time all the way down
+    for i in range(jins_df.shape[0]):
+        jins_df.at[i, 'TIME'] = i * res
+
+
+def preprocess_dataframes(jins_df, openface_df):
 
     jins_df.rename( columns={'DATE': 'TIME'}, inplace=True )  # rename the date column to time so it makes sense
     openface_df.columns = openface_df.columns.str.strip()  # columns have leading space, get rid of it
-
-    openface_delay = 2.0  # seconds between the time JINS began recording and openface began recording
 
     # cull openface data
     # keep time, AU45_r (blink regression)
@@ -66,6 +59,28 @@ if __name__ == '__main__':
     jins_df.drop(jins_cols_to_drop, axis=1, inplace=True)
 
     time_column_to_delta(jins_df)
+
+    return jins_df, openface_df
+
+
+if __name__ == '__main__':
+    # jins_fname = '../res/data1/jins_20180612174521.csv'
+    # openface_fname = '../res/data1/webcam_2018-06-12-13-45.csv'
+    # output_fname = '../res/data1/combined.csv'
+    jins_fname = '../res/data4/28A18305A891_20180612181409.csv'
+    openface_fname = '../res/data4/webcam_2018-06-12-14-12.csv'
+    output_fname = '../res/data4/combined.csv'
+
+    openface_delay = 2.0  # seconds between the time JINS began recording and openface began recording
+
+    print('loading jins data')
+    jins_df = pd.read_csv(jins_fname, skiprows=5)
+
+    print('loading openface data')
+    openface_df = pd.read_csv(openface_fname)
+
+    print('preprocessing dataframes')
+    jins_df, openface_df = preprocess_dataframes(jins_df, openface_df)
 
     print('combining')
     combine_data(jins_df, openface_df, openface_delay)
