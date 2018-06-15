@@ -9,9 +9,6 @@ s = socket.socket()
 
 read_in_buffer = b''
 
-history = []
-
-
 def initialize_connection(host, port):
     s.connect( (host, port) )
 
@@ -34,7 +31,6 @@ def read_until(condition_function):
         if read_in_buffer[-2:] == b'\r\n':
             new_frame_raw = read_in_buffer[:-2].decode('utf-8')
             new_frame = parse_frame(new_frame_raw)
-            history += [new_frame]
 
             # turn datetime into just clock time for printing
             printable = new_frame[1:]
