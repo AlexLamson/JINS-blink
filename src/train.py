@@ -3,7 +3,7 @@
 import pandas as pd
 import numpy as np
 from sklearn import cross_validation
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
 def extract_features(window):
     # in: n frames of EOG L, R, H, V
@@ -18,6 +18,10 @@ def evaluate_model(model, inputs, outputs):
 
     cv = cross_validation.KFold(n, n_folds=10, shuffle=True, random_state=None)
 
+    # used for averaging the confusion matrices, fscores
+    conf_array = []
+    f_array = []
+
     for i, (train_indices, test_indices) in enumerate(cv):
         # split into training and testing
         inputs_train = inputs[train_indices, :]
@@ -28,31 +32,15 @@ def evaluate_model(model, inputs, outputs):
         model.fit(inputs_train, outputs_train)
 
         predictions = model.predict(inputs_test)
+        
+        conf_array += [ confusion_matrix(outputs_test, predictions) ]
+        _, _, fscore, _ = precision_recall_fscore_support(outputs_test, predictions)
+        f_array += [ fscore ]
 
-        tp = fp = tn = fn = 0
-        for i, prediction in enumerate(predictions):
-            actual = outputs_test[i]
-
-            if prediction == actual:
-                if actual == False:
-                    tn += 1
-                else: tp += 1
-            else:
-                if actual:
-                    fn += 1
-                else:
-                    fp += 1
-
-        print('tp', tp)
-        print('tn', tn)
-        print('fp', fp)
-        print('fn', fn)
-        print('correct\t', (tp+tn) / len(predictions))
-        print('wrong\t', (fp+fn) / len(predictions))
-        print('precision?\t', (tp/(tp+fn)))
-        print()
-
-        # print( confusion_matrix(outputs_test, predictions, labels = ['no blink', 'blink']) )
+    print()
+    print('predicted\n open\tblink')
+    print( np.mean(conf_array, axis=0) )
+    print('fscore', np.mean(f_array, axis=0))
 
 def slidingWindow(sequence,winSize,step=1):
     """Returns a generator that will iterate through
