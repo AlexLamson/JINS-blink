@@ -1,5 +1,6 @@
 # trains a model to identify blinks
 
+import pickle
 import pandas as pd
 import numpy as np
 from sklearn import cross_validation
@@ -32,7 +33,7 @@ def evaluate_model(model, inputs, outputs):
         model.fit(inputs_train, outputs_train)
 
         predictions = model.predict(inputs_test)
-        
+
         conf_array += [ confusion_matrix(outputs_test, predictions) ]
         _, _, fscore, _ = precision_recall_fscore_support(outputs_test, predictions)
         f_array += [ fscore ]
@@ -105,3 +106,8 @@ if __name__ == '__main__':
 
     # save the model
     # be sure to re-train the best model on the full data-set
+    print('final fit')
+    model.fit(inputs, outputs)
+    print('saving')
+    with open('model.pickle', 'wb') as f:
+        pickle.dump(model, f)

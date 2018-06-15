@@ -9,7 +9,8 @@ s = socket.socket()
 
 read_in_buffer = b''
 
-history = []
+# function to be called once a full frame has been recieved
+on_frame = lambda x: print(frame_to_string(x))
 
 
 def initialize_connection(host, port):
@@ -34,21 +35,26 @@ def read_until(condition_function):
         if read_in_buffer[-2:] == b'\r\n':
             new_frame_raw = read_in_buffer[:-2].decode('utf-8')
             new_frame = parse_frame(new_frame_raw)
-            history += [new_frame]
 
-            # turn datetime into just clock time for printing
-            printable = new_frame[1:]
-            printable[1] = datetime.strftime(printable[1], '%H:%M:%S.%f')[:-4]
-            # if there was a mark, draw it at the end
-            if new_frame[0]:
-                printable += ['<']
-
-            print('\t'.join(printable))
+            # frame callback function
+            on_frame(new_frame)
 
             # reset buffer
             read_in_buffer = b''
 
     read_in_buffer = b''
+
+
+def frame_to_string(frame):
+	# turn datetime into just clock time
+    result = frame[1:]
+    result[1] = datetime.strftime(result[1], '%H:%M:%S.%f')[:-4]
+
+    # if there was a mark, indicate it at the end
+    if frame[0]:
+        result += ['<']
+
+    return '\t'.join(result)
 
 
 def parse_frame(frame):
