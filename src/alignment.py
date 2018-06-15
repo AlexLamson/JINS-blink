@@ -94,6 +94,6 @@ if __name__ == '__main__':
     print("coords: {:.4f} {:.4f}".format(jins_x, openface_x))
 
     # determine the index of the each selected point
-    jins_start_frame = combined_df.ix[(combined_df['TIME']-jins_x).abs().argsort()[:2]].iloc[0]['TIME']
-    openface_start_frame = combined_df.ix[(combined_df['TIME']-openface_x).abs().argsort()[:2]].iloc[0]['TIME']
-    print("jins_start_frame: {:.3f} openface_start_frame: {:.3f}".format(jins_start_frame, openface_start_frame))
+    jins_start_frame = combined_df.ix[(combined_df['TIME']-jins_x).abs().argsort()[:2]].iloc[0].name
+    openface_start_frame = combined_df.ix[(combined_df['TIME']-openface_x).abs().argsort()[:2]].iloc[0].name
+    print("jins_start_frame: {} openface_start_frame: {}".format(jins_start_frame, openface_start_frame))
