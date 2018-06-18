@@ -6,6 +6,7 @@ import numpy as np
 from sklearn import cross_validation
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
+
 def extract_features(window):
     # in: n frames of EOG L, R, H, V
 
@@ -13,6 +14,7 @@ def extract_features(window):
     out = np.append( out, window[1] - window[0] )  # diff from start to end of each EOG value
 
     return out
+
 
 def evaluate_model(model, inputs, outputs):
     n = len(inputs)
@@ -43,6 +45,7 @@ def evaluate_model(model, inputs, outputs):
     print( np.mean(conf_array, axis=0) )
     print('fscore', np.mean(f_array, axis=0))
 
+
 def slidingWindow(sequence,winSize,step=1):
     """Returns a generator that will iterate through
     the defined chunks of input sequence.  Input sequence
@@ -69,21 +72,13 @@ def slidingWindow(sequence,winSize,step=1):
     for i in range(0,numOfChunks*step,step):
         yield i, sequence[i:i+winSize]
 
-if __name__ == '__main__':
-    training_data_fname = '../res/data1/combined.csv'
 
-    print('loading data')
-    data = pd.read_csv(training_data_fname).as_matrix()  # read in data and turn it into a numpy array
-    print('done loading')
-
-    # put the data in terms of inputs and outputs
-    print('extracting features')
-    window_size = 2
-
+# put the data in terms of inputs and outputs
+def extract_features_from_csv(csv, window_size):
     inputs = []
     outputs = []
 
-    for i, window_full in slidingWindow(data, window_size):
+    for i, window_full in slidingWindow(csv, window_size):
         window = window_full[:, 2:-1]  # shave off frame id, time, and blink value
         features = extract_features(window)
 
@@ -92,6 +87,21 @@ if __name__ == '__main__':
 
     inputs = np.array(inputs)
     outputs = np.array(outputs)
+
+    return inputs, outputs
+
+
+if __name__ == '__main__':
+    training_data_fname = '../res/data1/combined.csv'
+
+    print('loading data')
+    data = pd.read_csv(training_data_fname).as_matrix()  # read in data and turn it into a numpy array
+    print('done loading')
+
+    
+    print('extracting features')
+    window_size = 2
+    inputs, outputs = extract_features_from_csv(data, window_size)
 
     # train the model
     print('evaluating')
