@@ -74,11 +74,13 @@ def slidingWindow(sequence,winSize,step=1):
 
 
 # put the data in terms of inputs and outputs
-def extract_features_from_csv(csv, window_size):
+def extract_features_from_dataframe(df, window_size):
+    data = df.as_matrix()  # turn it into a numpy array
+
     inputs = []
     outputs = []
 
-    for i, window_full in slidingWindow(csv, window_size):
+    for i, window_full in slidingWindow(data, window_size):
         window = window_full[:, 2:-1]  # shave off frame id, time, and blink value
         features = extract_features(window)
 
@@ -95,13 +97,13 @@ if __name__ == '__main__':
     training_data_fname = '../res/data1/combined.csv'
 
     print('loading data')
-    data = pd.read_csv(training_data_fname).as_matrix()  # read in data and turn it into a numpy array
+    data = pd.read_csv(training_data_fname)
     print('done loading')
 
     
     print('extracting features')
     window_size = 2
-    inputs, outputs = extract_features_from_csv(data, window_size)
+    inputs, outputs = extract_features_from_dataframe(data, window_size)
 
     # train the model
     print('evaluating')
