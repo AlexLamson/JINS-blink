@@ -3,50 +3,42 @@ import numpy as np
 import pickle
 from tqdm import tqdm
 from sklearn import preprocessing
+from scipy.interpolate import interp1d
+
+
+# pandas is actually terrible
+pd.options.mode.chained_assignment = None
 
 
 # combines jins and openface frames into the jins dataframe.
-def combine_data(jins_df, of_df):
-    jins_frame = jins_df.iloc[0].name
-    jins_size_full = jins_df.shape[0]
-    end_of_time = of_df['TIME'].iloc[-1]
+# def combine_data(jins_df, of_df):
+def combine_data(jins_df, of_df, j_start, o_start, j_end, o_end):
 
-    with tqdm(total=jins_size_full) as pbar:
-        while jins_frame < jins_size_full and jins_df['TIME'].iloc[jins_frame] <= end_of_time:
-            for column in of_df.columns:
-                if column == 'TIME':
-                    continue
+    def openface_time_to_jins_time(of_time):
+        normalized_time = (of_time-o_start)/(o_end-o_start)
+        jins_time = normalized_time*(j_end-j_start) + j_start
+        return jins_time
 
-                # interpolate the value of the column according to jins time
-                jins_df.at[jins_frame, column] = np.interp(jins_df['TIME'].iloc[jins_frame], of_df['TIME'], of_df[column])
+    # fix incorrect column dtype
+    jins_df['TIME'] = jins_df['TIME'].astype(float)
 
-            pbar.update(1)
-            jins_frame += 1
+    # trim the data
+    jins_df = jins_df[jins_df['TIME'].between(j_start, j_end, inclusive=True)]
+    of_df = of_df[of_df['TIME'].between(o_start, o_end, inclusive=True)]
+
+    # try to warp the openface data to match the jins data
+    of_df['TIME'] = of_df['TIME'].apply(openface_time_to_jins_time)
+
+    print("warping openface data")
+    interpolated_openface_data = np.interp(x=jins_df['TIME'], xp=of_df['TIME'], fp=of_df['AU45_r'])
+
+    pd.DataFrame(interpolated_openface_data).to_csv('love.csv')
+    
+    print('adding interpolated openface data to dataframe')
+    jins_df['AU45_r'] = pd.Series(interpolated_openface_data, index=jins_df.index)
 
     return jins_df
 
-# # combines jins and openface frames into the jins dataframe.
-# def combine_data(jins_df, of_df, delay=0):
-#     jins_frame = 0
-#     jins_size_full = jins_df.shape[0]
-
-#     # find jins frame based on delay
-#     while jins_df['TIME'][jins_frame] < delay:
-#         jins_df.drop(jins_frame, inplace=True)
-#         jins_frame += 1
-
-#     last_of_time = of_df['timestamp'][of_df.shape[0] - 1]
-#     while jins_size_full > jins_frame and jins_df['TIME'][jins_frame] <= last_of_time:
-#         for column in of_df.columns:
-#             if column == 'timestamp':
-#                 continue
-
-#             # interpolate the value of the column according to jins time
-#             jins_df.at[jins_frame, column] = np.interp(jins_df['TIME'][jins_frame] - delay, of_df['timestamp'], of_df[column])
-
-#         jins_frame += 1
-
-#     return jins_df
 
 # turns the jins time column into relative times
 def time_column_to_delta(jins_df):
@@ -81,18 +73,6 @@ def preprocess_dataframes(jins_df, openface_df):
 
     time_column_to_delta(jins_df)
 
-    # print('normalize jins data')
-    # x = jins_df.values
-    # min_max_scaler = preprocessing.MinMaxScaler()
-    # x_scaled = min_max_scaler.fit_transform(x)
-    # jins_df = pd.DataFrame(x_scaled, columns=jins_df.columns)
-
-    # print('normalize openface data')
-    # x = openface_df.values
-    # min_max_scaler = preprocessing.MinMaxScaler()
-    # x_scaled = min_max_scaler.fit_transform(x)
-    # openface_df = pd.DataFrame(x_scaled, columns=openface_df.columns)
-
     return jins_df, openface_df
 
 
@@ -105,12 +85,15 @@ def trim_by_start_time(df, start_time):
 
 
 if __name__ == '__main__':
-    jins_fname = '../res/data1/jins_20180612174521.csv'
-    openface_fname = '../res/data1/webcam_2018-06-12-13-45.csv'
-    output_fname = '../res/data1/combined.csv'
+    # jins_fname = '../res/data1/jins_20180612174521.csv'
+    # openface_fname = '../res/data1/webcam_2018-06-12-13-45.csv'
+    # output_fname = '../res/data1/combined.csv'
     # jins_fname = '../res/data4/28A18305A891_20180612181409.csv'
     # openface_fname = '../res/data4/webcam_2018-06-12-14-12.csv'
     # output_fname = '../res/data4/combined.csv'
+    jins_fname = '../res/data5/28A18305A891_20180618201930.csv'
+    openface_fname = '../res/data5/webcam_2018-06-18-16-19.csv'
+    output_fname = '../res/data5/combined.csv'
 
     print('loading jins data')
     jins_df = pd.read_csv(jins_fname, skiprows=5)
@@ -122,18 +105,16 @@ if __name__ == '__main__':
     jins_df, openface_df = preprocess_dataframes(jins_df, openface_df)
 
     print('aligning data')
-    start_times_filename = "start_times.pickle"
-    (jins_start_time, openface_start_time) = pickle.load(open(start_times_filename, "rb"))
+    start_times_filename = "calibration_times.pickle"
+    (jins_start_time, openface_start_time, jins_end_time, openface_end_time) = pickle.load(open(start_times_filename, "rb"))
     print("starting frames: jins {:.3f}  openface {:.3f}".format(jins_start_time, openface_start_time))
-    openface_df = trim_by_start_time(openface_df, openface_start_time)
-    jins_df = trim_by_start_time(jins_df, jins_start_time)
 
-    print('saving cleaned data')
-    jins_df.to_csv('../res/data1/jins_clean.csv')
-    openface_df.to_csv('../res/data1/openface_clean.csv')
+    # print('[DEBUG] saving cleaned data')
+    # jins_df.to_csv(jins_fname+'.cleaned.csv')
+    # openface_df.to_csv(openface_fname+'.cleaned.csv')
 
-    print('combining (may be slow for first 10-15 seconds)')
-    combine_data(jins_df, openface_df)
+    print('combining...')
+    combined_df = combine_data(jins_df, openface_df, jins_start_time, openface_start_time, jins_end_time, openface_end_time)
 
     print('saving combined data')
-    jins_df.to_csv(output_fname)
+    combined_df.to_csv(output_fname)
