@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import pickle
+import util
 from tqdm import tqdm
 from sklearn import preprocessing
 from scipy.interpolate import interp1d
@@ -85,15 +86,11 @@ def trim_by_start_time(df, start_time):
 
 
 if __name__ == '__main__':
-    # jins_fname = '../res/data1/jins_20180612174521.csv'
-    # openface_fname = '../res/data1/webcam_2018-06-12-13-45.csv'
-    # output_fname = '../res/data1/combined.csv'
-    # jins_fname = '../res/data4/28A18305A891_20180612181409.csv'
-    # openface_fname = '../res/data4/webcam_2018-06-12-14-12.csv'
-    # output_fname = '../res/data4/combined.csv'
-    jins_fname = '../res/data5/28A18305A891_20180618201930.csv'
-    openface_fname = '../res/data5/webcam_2018-06-18-16-19.csv'
-    output_fname = '../res/data5/combined.csv'
+
+    path = '../res/data4/'
+    output_fname = path + 'combined.csv'
+
+    jins_fname, openface_fname = util.get_jins_openface_csv(path)
 
     print('loading jins data')
     jins_df = pd.read_csv(jins_fname, skiprows=5)
@@ -117,4 +114,4 @@ if __name__ == '__main__':
     combined_df = combine_data(jins_df, openface_df, jins_start_time, openface_start_time, jins_end_time, openface_end_time)
 
     print('saving combined data')
-    combined_df.to_csv(output_fname)
+    util.guarantee_execution(combined_df.to_csv, (output_fname,))
