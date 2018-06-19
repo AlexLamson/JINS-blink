@@ -5,13 +5,20 @@ import sys
 import jins_client
 import train
 import numpy as np
+from time import time
 
+window_size = 2
 
-window = np.zeros((2, 4))
+window = np.zeros((window_size, 4))
 
 model = None
 with open('model.pickle', 'rb') as f:
     model = pickle.load(f)
+
+update_interval = 0.25
+last_draw_time = 0
+blinks_this_interval = 0
+blink_threshold = 5
 
 
 def frame_to_windowable(frame):
@@ -20,7 +27,7 @@ def frame_to_windowable(frame):
 
 
 def classify(frame):
-    global window, model
+    global window, model, update_interval, last_draw_time, blinks_this_interval, blink_threshold
 
     window[0] = window[1]
     window[1] = frame_to_windowable(frame)
@@ -29,7 +36,14 @@ def classify(frame):
 
     prediction = model.predict(features)
 
-    print( '\tblink' if prediction else 'open' )
+    if prediction:
+    	blinks_this_interval += 1
+
+    if time() - last_draw_time > update_interval:
+    	print( '\tblink' if blinks_this_interval >= blink_threshold else 'open' )
+
+    	last_draw_time = time()
+    	blinks_this_interval = 0
 
 
 if __name__ == '__main__':
