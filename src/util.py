@@ -24,6 +24,8 @@ def get_jins_openface_csv(path):
     return result_jins, result_openface
 
 
+# if a file is open in Excel, it kills the program that tries to write to that file
+# this function will let you try again if that's the case
 def guarantee_execution(function, fargs):
     attempting = True
 
