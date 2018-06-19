@@ -10,7 +10,6 @@ def get_jins_openface_csv(path):
     of_re    = '^webcam.*\.csv$'
 
     for fname in os.listdir(path):
-        print(fname)
         if re.match(jins_re, fname):
             if result_jins:
                 print('WARNING: multiple candidates for jins file')
