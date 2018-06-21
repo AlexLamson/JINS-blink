@@ -32,8 +32,6 @@ def combine_data(jins_df, of_df, j_start, o_start, j_end, o_end):
 
     print("warping openface data")
     interpolated_openface_data = np.interp(x=jins_df['TIME'], xp=of_df['TIME'], fp=of_df['AU45_r'])
-
-    pd.DataFrame(interpolated_openface_data).to_csv('love.csv')
     
     print('adding interpolated openface data to dataframe')
     jins_df['AU45_r'] = pd.Series(interpolated_openface_data, index=jins_df.index)
