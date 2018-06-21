@@ -12,8 +12,19 @@ def extract_features(window):
     # in: n frames of EOG L, R, H, V
 
     out = np.mean(window, axis=0)  # mean of each EOG value
-    out = np.append( out, window[1] - window[0] )  # diff from start to end of each EOG value
+    out = np.append( out, np.min(window, axis=0) )  # min for each EOG value
+    out = np.append( out, np.max(window, axis=0) )  # max for each EOG value
+    out = np.append( out, np.max(window, axis=0) - np.min(window, axis=0) )  # max - in for each EOG value
+    out = np.append( out, window[1] - window[0] )  # diff from start to end for each EOG value
 
+    magnitudes = np.linalg.norm(window, axis=1)  # magnitude of each frame
+
+    out = np.append( out, np.mean(magnitudes) )
+    out = np.append( out, np.min(magnitudes) )
+    out = np.append( out, np.max(magnitudes) )
+    out = np.append( out, out[-1] - out[-2] )  # max - min of magnitudes
+    out = np.append( out, magnitudes[-1] - magnitudes[0] )  # diff from start to end magnitude
+    
     return out
 
 
@@ -100,7 +111,9 @@ def extract_features_from_dataframe(df, window_size):
 
 
 if __name__ == '__main__':
-    training_data_fname = '../res/data1/combined.csv'
+    training_data_fname = '../res/data4/combined.csv'
+
+    window_size = 10
 
     print('loading data')
     data = pd.read_csv(training_data_fname)
@@ -108,7 +121,6 @@ if __name__ == '__main__':
 
     
     print('extracting features')
-    window_size = 2
     inputs, outputs = extract_features_from_dataframe(data, window_size)
 
     # train the model

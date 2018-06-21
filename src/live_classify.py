@@ -7,7 +7,7 @@ import train
 import numpy as np
 from time import time
 
-window_size = 2
+window_size = 10
 
 window = np.zeros((window_size, 4))
 
@@ -18,7 +18,7 @@ with open('model.pickle', 'rb') as f:
 update_interval = 0.25
 last_draw_time = 0
 blinks_this_interval = 0
-blink_threshold = 5
+blink_threshold = 2
 
 
 def frame_to_windowable(frame):
