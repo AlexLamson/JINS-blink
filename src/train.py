@@ -3,6 +3,7 @@
 import pickle
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 from sklearn import cross_validation
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
@@ -80,12 +81,17 @@ def extract_features_from_dataframe(df, window_size):
     inputs = []
     outputs = []
 
-    for i, window_full in slidingWindow(data, window_size):
-        window = window_full[:, 2:-1]  # shave off frame id, time, and blink value
-        features = extract_features(window)
+    samples = df.shape[0] - window_size + 1
 
-        inputs += [ features ]
-        outputs += [ np.mean(window_full[:, -1]) >= 0.4 ]  # turn the blink data into booleans
+    with tqdm(total=samples) as pbar:
+        for i, window_full in slidingWindow(data, window_size):
+            window = window_full[:, 2:-1]  # shave off frame id, time, and blink value
+            features = extract_features(window)
+
+            inputs += [ features ]
+            outputs += [ np.mean(window_full[:, -1]) >= 0.6 ]  # turn the blink data into booleans
+
+            pbar.update(1)
 
     inputs = np.array(inputs)
     outputs = np.array(outputs)
