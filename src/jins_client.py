@@ -9,8 +9,10 @@ s = socket.socket()
 
 read_in_buffer = b''
 
-# function to be called once a full frame has been recieved
-on_frame = lambda x: print(frame_to_string(x))
+
+# function to be called once a full frame has been received
+def on_frame(x):
+    print(frame_to_string(x))
 
 
 def initialize_connection(host, port):
@@ -46,7 +48,7 @@ def read_until(condition_function):
 
 
 def frame_to_string(frame):
-	# turn datetime into just clock time
+    # turn datetime into just clock time
     result = frame[1:]
     result[1] = datetime.strftime(result[1], '%H:%M:%S.%f')[:-4]
 

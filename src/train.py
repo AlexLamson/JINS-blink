@@ -111,7 +111,8 @@ def extract_features_from_dataframe(df, window_size):
 
 
 if __name__ == '__main__':
-    training_data_fname = '../res/data4/combined.csv'
+    # training_data_fname = '../res/data4/combined.csv'
+    training_data_fname = data_folder+'combined.csv'
 
     window_size = 10
 

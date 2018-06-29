@@ -1,3 +1,4 @@
+from util import *
 import pandas as pd
 import numpy as np
 import pickle
@@ -32,7 +33,7 @@ def combine_data(jins_df, of_df, j_start, o_start, j_end, o_end):
 
     print("warping openface data")
     interpolated_openface_data = np.interp(x=jins_df['TIME'], xp=of_df['TIME'], fp=of_df['AU45_r'])
-    
+
     print('adding interpolated openface data to dataframe')
     jins_df['AU45_r'] = pd.Series(interpolated_openface_data, index=jins_df.index)
 
@@ -85,7 +86,8 @@ def trim_by_start_time(df, start_time):
 
 if __name__ == '__main__':
 
-    path = '../res/data4/'
+    # path = '../res/data4/'
+    path = data_folder
     output_fname = path + 'combined.csv'
 
     jins_fname, openface_fname = util.get_jins_openface_csv(path)

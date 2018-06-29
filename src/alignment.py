@@ -1,3 +1,4 @@
+from util import *
 import pandas as pd
 import numpy as np
 import util
@@ -8,7 +9,8 @@ import pickle
 
 
 if __name__ == '__main__':
-    path = '../res/data4/'
+    path = data_folder
+    # path = '../res/data4/'
     output_fname = path + 'combined.csv'
 
     jins_fname, openface_fname = util.get_jins_openface_csv(path)
