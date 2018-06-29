@@ -1,5 +1,15 @@
 import os
 import re
+import pickle
+from tqdm import tqdm
+
+# enable tqdm-pandas integration
+tqdm.pandas()
+
+
+
+data_folder = '../res/data4/'
+
 
 
 def get_jins_openface_csv(path):
@@ -37,3 +47,50 @@ def guarantee_execution(function, fargs):
 
             if input("Try again? Submit 'n' to abort: ") == 'n':
                 attempting = False
+
+
+def fix_path(filename):
+    if not filename.startswith(data_folder):
+        filename = data_folder + filename
+    return filename
+
+
+# http://stackoverflow.com/a/27518377/2230446
+def get_num_lines(filename):
+    filename = fix_path(filename)
+    f = open(filename, "rb")
+    num_lines = 0
+    buf_size = 1024 * 1024
+    read_f = f.raw.read
+
+    buf = read_f(buf_size)
+    while buf:
+        num_lines += buf.count(b"\n")
+        buf = read_f(buf_size)
+
+    return num_lines
+
+
+# save a pickle file
+def save_obj(obj, filename, print_debug_info=True):
+    filename = fix_path(filename)
+    sanitized_name = filename.replace('.pickle', '')
+    with open(sanitized_name + '.pickle', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+        if print_debug_info:
+            print('Saved {}'.format(sanitized_name + '.pickle'))
+
+
+# load a pickle file
+def load_obj(filename, print_debug_info=True):
+    filename = fix_path(filename)
+    sanitized_name = filename.replace('.pickle', '')
+    with open(sanitized_name + '.pickle', 'rb') as f:
+        obj = pickle.load(f)
+        if print_debug_info:
+            print('Loaded {}'.format(sanitized_name + '.pickle'))
+        return obj
+
+
+def file_exists(fname):
+    return os.path.isfile(fname)
