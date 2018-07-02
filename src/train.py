@@ -6,6 +6,7 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.model_selection import KFold
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
+from random import random
 
 
 def extract_features(window):
@@ -144,6 +145,22 @@ if __name__ == '__main__':
     # uncomment line to sample it so the models train faster
     seconds_of_data = 60*10
     inputs, outputs = inputs[:seconds_of_data*100], outputs[:seconds_of_data*100]
+
+
+    # sample blinks more often than open eyes to address class imbalance
+    def should_sample(window):
+        # NOTE: THIS IS A BLINK REGRESSION VALUE, NOT A WINDOW DESPITE THE NAME
+        # FIX THAT LATER
+        max_blinkyness = window #np.max(window[:,-1])
+        if max_blinkyness >= 0.5:
+            return True
+        else:
+            return random() < window+0.01  # added slight perturbation to allow 0% confidence blinks in
+    samples_mask = np.array([should_sample(window) for window in outputs])
+
+    inputs = inputs[samples_mask]
+    outputs = outputs[samples_mask]
+
 
 
     # train the model
