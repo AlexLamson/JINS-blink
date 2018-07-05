@@ -3,7 +3,7 @@
 from util import *
 import pickle
 import sys
-import jins_client
+import data_collection_jins_client
 import train
 import numpy as np
 from time import time

@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import util
 import matplotlib.pyplot as plt
-from merge_data import preprocess_dataframes, combine_data
+from data_collection_merge_data import preprocess_dataframes, combine_data
 from sklearn import preprocessing
 import pickle
 
