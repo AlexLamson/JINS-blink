@@ -3,6 +3,9 @@ res/
 *.pickle
 *.csv
 *.txt
+*.m
+*.mat
+!categories.mat
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
