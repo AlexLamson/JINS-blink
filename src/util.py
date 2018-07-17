@@ -108,6 +108,7 @@ def all_files_in_folder(some_directory):
     only_files = [f for f in listdir(some_directory) if isfile(join(some_directory, f))]
     return only_files
 
+
 def all_folders_in_folder(some_directory):
     only_files = [f for f in listdir(some_directory) if isdir(join(some_directory, f))]
     return only_files
