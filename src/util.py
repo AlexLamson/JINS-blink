@@ -1,14 +1,22 @@
-import os
-import re
-import pickle
-from tqdm import tqdm
+# set the random seed for repeatability
+import numpy as np
+rand_seed = 123456
+np.random.seed(rand_seed)
 
 # enable tqdm-pandas integration
+from tqdm import tqdm
 tqdm.pandas()
 
+import os
+from os import listdir
+from os.path import isfile, isdir, join
+import re
+import pickle
 
 
-data_folder = '../res/data4/'
+
+
+data_folder = '../res/'
 
 
 
@@ -93,4 +101,13 @@ def load_obj(filename, print_debug_info=True):
 
 
 def file_exists(fname):
-    return os.path.isfile(fname)
+    return isfile(fname)
+
+
+def all_files_in_folder(some_directory):
+    only_files = [f for f in listdir(some_directory) if isfile(join(some_directory, f))]
+    return only_files
+
+def all_folders_in_folder(some_directory):
+    only_files = [f for f in listdir(some_directory) if isdir(join(some_directory, f))]
+    return only_files
