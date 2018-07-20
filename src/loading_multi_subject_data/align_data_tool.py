@@ -10,16 +10,8 @@ from matplotlib.widgets import Slider, Button, RadioButtons
 import pandas as pd
 
 
-
-def get_data():
-    # path = data_folder
-    path = '../../res/data5/'
-    output_fname = path + 'combined.csv'
-
-    jins_fname, openface_fname = get_jins_openface_csv(path)
-
-    start_preview_size = 30  # how much time of the beginning should we save, by number of samples? (in seconds)
-    end_preview_size = 60  # and the same for the end of the data
+def get_data(path, jins_filename, openface_filename):
+    jins_filename, openface_filename = path+jins_filename, path+openface_filename
 
     eog_min = -400
     eog_max = 400
@@ -27,12 +19,12 @@ def get_data():
     of_max = 2.5
 
     print('loading jins data')
-    # jins_df = pd.read_csv(jins_fname, skiprows=5, nrows=100*preview_size_in_seconds)
-    jins_df = pd.read_csv(jins_fname, skiprows=5)
+    # jins_df = pd.read_csv(jins_filename, skiprows=5, nrows=100*preview_size_in_seconds)
+    jins_df = pd.read_csv(jins_filename, skiprows=5)
 
     print('loading openface data')
-    # openface_df = pd.read_csv(openface_fname, nrows=20*preview_size_in_seconds)
-    openface_df = pd.read_csv(openface_fname)
+    # openface_df = pd.read_csv(openface_filename, nrows=20*preview_size_in_seconds)
+    openface_df = pd.read_csv(openface_filename)
 
     # print(openface_df)
 
@@ -46,8 +38,8 @@ def get_data():
     # combined_df = combine_data(jins_df, openface_df)
 
     # print('[DEBUG] saving cleaned data')
-    # jins_df.to_csv(jins_fname+'.align.cleaned.csv')
-    # openface_df.to_csv(openface_fname+'.align.cleaned.csv')
+    # jins_df.to_csv(jins_filename+'.align.cleaned.csv')
+    # openface_df.to_csv(openface_filename+'.align.cleaned.csv')
 
     print('drop low quality eog frames')
     jins_df = jins_df.drop(jins_df[jins_df['EOG_V'] < eog_min].index)
@@ -70,56 +62,83 @@ def get_data():
     # au45_r_normalized = au45_r
 
 
+    # eog_v_normalized = np.gradient(eog_v_normalized, axis=0)
+    # eog_v_normalized = (eog_v_normalized) / (eog_v_normalized.max() - eog_v_normalized.min())
+
+
     jins_time = jins_df[['TIME']].values.astype(float)
     of_time = openface_df[['TIME']].values.astype(float)
 
     return jins_time, of_time, eog_v_normalized, au45_r_normalized
 
 
-jins_time, of_time, eog_v_normalized, au45_r_normalized = get_data()
+def get_alignments(path, jins_filename, openface_filename):
+    jins_time, of_time, eog_v_normalized, au45_r_normalized = get_data(path, jins_filename, openface_filename)
+
+    fig, ax = plt.subplots()
+    plt.subplots_adjust(bottom=0.25)
+
+    initial_fine_tune = 0
+    intial_shift_delta = 0
+
+    # jins_plot, = plt.plot(jins_time, eog_v_normalized, lw=2, color='xkcd:blue')
+    # of_plot, = plt.plot(of_time, au45_r_normalized, lw=2, color='xkcd:red')
+    jins_plot, = plt.plot(jins_time, eog_v_normalized, lw=2, color='xkcd:cerulean')
+    of_plot, = plt.plot(of_time, au45_r_normalized, lw=2, color='xkcd:light red')
+    plt.axis([0, 45, -1, 1])
+
+    axcolor = 'lightgoldenrodyellow'
+    ax_shift_delta = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
+    axamp = plt.axes([0.25, 0.15, 0.65, 0.03], facecolor=axcolor)
+
+    shift_delta_slider = Slider(ax_shift_delta, 'Shift data', -30, 10, valinit=intial_shift_delta)
+    fine_tune_slider = Slider(axamp, 'Fine tuning', -1, 1, valinit=initial_fine_tune)
+
+
+    def update(val):
+        fine_tune = fine_tune_slider.val
+        shift_delta = shift_delta_slider.val
+
+        of_plot.set_xdata(of_time+shift_delta+fine_tune)
+
+        fig.canvas.draw_idle()
+    shift_delta_slider.on_changed(update)
+    fine_tune_slider.on_changed(update)
+
+    save_ax = plt.axes([0.7, 0.025, 0.2, 0.04])
+    save_button = Button(save_ax, 'Save alignment', color=axcolor, hovercolor='0.975')
+
+
+    def reset(event):
+        print("you pressed the button")
+        time_delta = shift_delta_slider.val + fine_tune_slider.val
+        print("current time delta is: {}".format(time_delta))
 
 
 
+        if time_delta < 0:
+            jins_start_time = 0.0
+            openface_start_time = -time_delta
+        else:
+            jins_start_time = time_delta
+            openface_start_time = 0.0
 
-fig, ax = plt.subplots()
-plt.subplots_adjust(left=0.0, bottom=0.25)
+        max_jins_time = (jins_time - jins_start_time).max()
+        max_of_time = (of_time - openface_start_time).max()
 
-initial_fine_tune = 0
-intial_shift_delta = 0
+        jins_end_time = min(max_jins_time, max_of_time)
+        openface_end_time = min(max_jins_time, max_of_time)
 
-jins_plot, = plt.plot(jins_time, eog_v_normalized, lw=2, color='blue')
-of_plot, = plt.plot(of_time, au45_r_normalized, lw=2, color='red')
-plt.axis([0, 45, -1, 1])
-
-axcolor = 'lightgoldenrodyellow'
-ax_shift_delta = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
-axamp = plt.axes([0.25, 0.15, 0.65, 0.03], facecolor=axcolor)
-
-shift_delta_slider = Slider(ax_shift_delta, 'Shift data', -30, 10, valinit=intial_shift_delta)
-fine_tune_slider = Slider(axamp, 'Fine tuning', -1, 1, valinit=initial_fine_tune)
+        save_obj((jins_start_time, openface_start_time, jins_end_time, openface_end_time), path+"alignments.pickle")
 
 
-def update(val):
-    fine_tune = fine_tune_slider.val
-    shift_delta = shift_delta_slider.val
+        # shift_delta_slider.reset()
+        # fine_tune_slider.reset()
+    save_button.on_clicked(reset)
 
-    of_plot.set_xdata(of_time+shift_delta+fine_tune)
-
-    fig.canvas.draw_idle()
-shift_delta_slider.on_changed(update)
-fine_tune_slider.on_changed(update)
-
-save_ax = plt.axes([0.7, 0.025, 0.2, 0.04])
-save_button = Button(save_ax, 'Save alignment', color=axcolor, hovercolor='0.975')
+    plt.show()
 
 
-def reset(event):
-    print("you pressed the button")
-    time_delta = shift_delta_slider.val + fine_tune_slider.val
-    print("current time delta is: {}".format(time_delta))
-
-    # shift_delta_slider.reset()
-    # fine_tune_slider.reset()
-save_button.on_clicked(reset)
-
-plt.show()
+path = '../../res/data5/'
+jins_filename, openface_filename = get_jins_openface_csv(path)
+get_alignments(path, jins_filename, openface_filename)
