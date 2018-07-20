@@ -75,6 +75,8 @@ def get_data(path, jins_filename, openface_filename):
 def get_alignments(path, jins_filename, openface_filename):
     jins_time, of_time, eog_v_normalized, au45_r_normalized = get_data(path, jins_filename, openface_filename)
 
+    jins_time *= of_time_per_jins_time
+
     fig, ax = plt.subplots()
     plt.subplots_adjust(bottom=0.25)
 
