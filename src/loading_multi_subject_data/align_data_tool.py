@@ -82,7 +82,7 @@ jins_time, of_time, eog_v_normalized, au45_r_normalized = get_data()
 
 
 fig, ax = plt.subplots()
-plt.subplots_adjust(left=0.25, bottom=0.25)
+plt.subplots_adjust(left=0.0, bottom=0.25)
 
 initial_fine_tune = 0
 intial_shift_delta = 0
