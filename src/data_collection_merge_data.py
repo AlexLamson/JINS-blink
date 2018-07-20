@@ -32,7 +32,7 @@ def combine_data(jins_df, of_df, j_start, o_start, j_end, o_end):
     of_df['TIME'] = of_df['TIME'].apply(openface_time_to_jins_time)
 
     print("warping openface data")
-    interpolated_openface_data = np.interp(x=jins_df['TIME'], xp=of_df['TIME'], fp=of_df['AU45_r'])
+    interpolated_openface_data = np.interp(x=jins_df['TIME'] * of_time_per_jins_time, xp=of_df['TIME'], fp=of_df['AU45_r'])
 
     print('adding interpolated openface data to dataframe')
     jins_df['AU45_r'] = pd.Series(interpolated_openface_data, index=jins_df.index)
@@ -64,6 +64,8 @@ def preprocess_dataframes(jins_df, openface_df):
                              'AU06_r', 'AU07_r', 'AU09_r', 'AU10_r', 'AU12_r', 'AU14_r', 'AU15_r', 'AU17_r', 'AU20_r', 'AU23_r', 'AU25_r',
                              'AU26_r', 'AU01_c', 'AU02_c', 'AU04_c', 'AU05_c', 'AU06_c', 'AU07_c', 'AU09_c', 'AU10_c', 'AU12_c', 'AU14_c',
                              'AU15_c', 'AU17_c', 'AU20_c', 'AU23_c', 'AU25_c', 'AU26_c', 'AU28_c', 'AU45_c']
+    # some columns, like face_id, don't show up in every data set, so make sure we're only dropping cols that exist
+    openface_cols_to_drop = list( set(openface_cols_to_drop) & set(openface_df.columns) )
     openface_df.drop(openface_cols_to_drop, axis=1, inplace=True)
 
     # cull jins data

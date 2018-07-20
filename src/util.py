@@ -18,6 +18,7 @@ import pickle
 
 data_folder = '../res/'
 
+of_time_per_jins_time = 1.00610973512302
 
 
 def get_jins_openface_csv(path):
