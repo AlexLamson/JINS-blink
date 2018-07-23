@@ -11,8 +11,7 @@ from matplotlib.widgets import Slider, Button, RadioButtons
 import pandas as pd
 
 
-def get_data(jins_filepath, openface_filepath, output_filepath):
-
+def get_data(jins_path, openface_path, output_path):
 
     eog_min = -400
     eog_max = 400
@@ -21,11 +20,11 @@ def get_data(jins_filepath, openface_filepath, output_filepath):
 
     print('loading jins data')
     # jins_df = pd.read_csv(jins_filename, skiprows=5, nrows=100*preview_size_in_seconds)
-    jins_df = pd.read_csv(jins_filepath, skiprows=5)
+    jins_df = pd.read_csv(jins_path, skiprows=5)
 
     print('loading openface data')
     # openface_df = pd.read_csv(openface_filename, nrows=20*preview_size_in_seconds)
-    openface_df = pd.read_csv(openface_filepath)
+    openface_df = pd.read_csv(openface_path)
 
     # print(openface_df)
 
@@ -73,8 +72,8 @@ def get_data(jins_filepath, openface_filepath, output_filepath):
     return jins_time, of_time, eog_v_normalized, au45_r_normalized
 
 
-def start_aligner_tool(jins_filepath, openface_filepath, mat_filepath, output_filepath):
-    jins_time, of_time, eog_v_normalized, au45_r_normalized = get_data(jins_filepath, openface_filepath, mat_filepath)
+def start_aligner_tool(jins_path, openface_path, mat_path, output_path):
+    jins_time, of_time, eog_v_normalized, au45_r_normalized = get_data(jins_path, openface_path, mat_path)
 
     jins_time *= of_time_per_jins_time
 
@@ -132,7 +131,7 @@ def start_aligner_tool(jins_filepath, openface_filepath, mat_filepath, output_fi
         jins_end_time = min(max_jins_time, max_of_time)
         openface_end_time = min(max_jins_time, max_of_time)
 
-        save_obj((jins_start_time, openface_start_time, jins_end_time, openface_end_time), path+"alignments.pickle")
+        save_obj((jins_start_time, openface_start_time, jins_end_time, openface_end_time), output_path)
 
 
         # shift_delta_slider.reset()
@@ -147,7 +146,7 @@ def start_aligner_tool(jins_filepath, openface_filepath, mat_filepath, output_fi
 # path = '../../res/data5/'
 # jins_filename, openface_filename = get_jins_openface_csv(path)
 # start_aligner_tool(path, jins_filename, openface_filename)
-# output_filepath
+# output_path
 # DEBUGGING
 # DEBUGGING
 
@@ -156,14 +155,14 @@ for subject_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/"):
     for label_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/{0}/FACS".format(subject_id)):
 
         # generate paths to relevant files
-        of_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/oface/{0}_{1}.csv".format(subject_id, label_id)
+        openface_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/oface/{0}_{1}.csv".format(subject_id, label_id)
         mat_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/time_stamps/{0}_{1}.mat".format(subject_id, label_id)
         corrected_openface_path = 'C:/Data_Experiment_W!NCE/{0}/FACS/{1}/oface/{0}_{1}_correct_times.csv'.format(subject_id, label_id)
         jins_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/jins/{0}_{1}.csv".format(subject_id, label_id)
         alignment_output_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/alignment.pickle".format(subject_id, label_id)
 
         # check that the files exist ( because sometimes they don't :( )
-        if not file_exists(of_path):
+        if not file_exists(openface_path):
             print("subject {} {} missing openface data".format(subject_id, label_id))
             continue
         if not file_exists(mat_path):
@@ -178,4 +177,4 @@ for subject_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/"):
         run the alignment script
         '''
         create_corrected_file(openface_path, mat_path, corrected_openface_path)
-        start_aligner_tool(jins_filepath, corrected_openface_path, mat_filepath, alignment_output_path)
+        start_aligner_tool(jins_path, corrected_openface_path, mat_path, alignment_output_path)
