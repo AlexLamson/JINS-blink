@@ -195,9 +195,9 @@ for subject_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/"):
         print("="*30)
         print("loading subject {} with {}".format(subject_id, label_id))
         print("="*30)
-        '''
-        correct the openface time stamps
-        run the alignment script
-        '''
+
+        # correct the openface timestamps using the more reliable matlab timestamps
         create_corrected_file(openface_path, mat_path, corrected_openface_path)
+
+        # run the alignment script so the human can align the data
         start_aligner_tool(jins_path, corrected_openface_path, mat_path, alignment_output_path)
