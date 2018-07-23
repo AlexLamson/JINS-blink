@@ -79,6 +79,14 @@ def start_aligner_tool(jins_path, openface_path, mat_path, output_path):
 
     fig, ax = plt.subplots()
     plt.subplots_adjust(bottom=0.25)
+    fig.canvas.set_window_title(output_path)  # set the window title
+
+    # gracefully exit when someone presses the X button
+    def handle_close(evt):
+        print('user closed out of window, stopping program :)')
+        exit()
+    fig.canvas.mpl_connect('close_event', handle_close)
+
 
     initial_fine_tune = 0
     intial_shift_delta = 0
@@ -141,18 +149,25 @@ def start_aligner_tool(jins_path, openface_path, mat_path, output_path):
     plt.show()
 
 
-# DEBUGGING
-# DEBUGGING
+# # DEBUGGING
+# # DEBUGGING
 # path = '../../res/data5/'
 # jins_filename, openface_filename = get_jins_openface_csv(path)
-# start_aligner_tool(path, jins_filename, openface_filename)
+# output_path = "../../res/data5/alignment.pickle"
+# # print(jins_filename)
+# # exit()
+# start_aligner_tool(path, jins_filename, openface_filename, output_path)
 # output_path
-# DEBUGGING
-# DEBUGGING
+# # DEBUGGING
+# # DEBUGGING
 
 
 for subject_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/"):
     for label_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/{0}/FACS".format(subject_id)):
+
+        if not label_id.endswith('0'):
+            print("skipping non-zero label")
+            continue
 
         # generate paths to relevant files
         openface_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/oface/{0}_{1}.csv".format(subject_id, label_id)
@@ -160,6 +175,11 @@ for subject_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/"):
         corrected_openface_path = 'C:/Data_Experiment_W!NCE/{0}/FACS/{1}/oface/{0}_{1}_correct_times.csv'.format(subject_id, label_id)
         jins_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/jins/{0}_{1}.csv".format(subject_id, label_id)
         alignment_output_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/alignment.pickle".format(subject_id, label_id)
+
+        # if we already aligned the file, don't bother trying to align it again
+        if file_exists(alignment_output_path):
+            print("skipping file that has already been aligned")
+            continue
 
         # check that the files exist ( because sometimes they don't :( )
         if not file_exists(openface_path):
@@ -172,6 +192,9 @@ for subject_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/"):
             print("subject {} {} missing jins data".format(subject_id, label_id))
             continue
 
+        print("="*30)
+        print("loading subject {} with {}".format(subject_id, label_id))
+        print("="*30)
         '''
         correct the openface time stamps
         run the alignment script
