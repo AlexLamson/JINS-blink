@@ -11,6 +11,11 @@ if __name__ == "__main__":
     print("This file isn't meant to be run directly. Run general_machine_learning.py instead")
 
 
+def get_path(subject_id, label_id):
+    path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.mat".format(subject_id, label_id)
+    return path
+
+
 def get_data(use_precomputed=False):
     if use_precomputed:
         filename = "all_data.pkl"
@@ -21,7 +26,7 @@ def get_data(use_precomputed=False):
 
         else:
             print("loading pickled data")
-            (X_all, y_all, groups, feature_names, subjects, labels, class_names) = load_object(filename)
+            (X_all, y_all, groups, feature_names, subject_ids, labels, class_names) = load_object(filename)
 
             return (X_all, y_all, groups, feature_names, subjects, labels, class_names)
 
@@ -32,7 +37,7 @@ def get_data(use_precomputed=False):
         class_names = "none,eyebrows lower,eyebrows raiser,cheek raiser,nose wrinkler,upper lip raiser,mouth open".split(',')
 
         X_all_raw = None
-        X_all = None  # np.zeros(shape=(0,201*10))
+        X_all = None
         y_all = []
         groups = []
 
@@ -42,7 +47,7 @@ def get_data(use_precomputed=False):
         for subject in subjects:
             # subject_data = np.zeros(shape=(0,201,10))
             for label in labels:
-                path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.mat".format(subject, label)
+                path = get_path(subject, label)
 
                 # [ trial * window frames * sensor channels ]
                 matlab_object = scipy.io.loadmat(path)
