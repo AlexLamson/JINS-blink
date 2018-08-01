@@ -7,11 +7,11 @@ from openface_time_fixer import create_corrected_file
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider, Button, RadioButtons
+from matplotlib.widgets import Slider, Button
 import pandas as pd
 
 
-def get_data(jins_path, openface_path, output_path):
+def get_data(jins_path, openface_path):
 
     eog_min = -400
     eog_max = 400
@@ -72,8 +72,8 @@ def get_data(jins_path, openface_path, output_path):
     return jins_time, of_time, eog_v_normalized, au45_r_normalized
 
 
-def start_aligner_tool(jins_path, openface_path, mat_path, output_path):
-    jins_time, of_time, eog_v_normalized, au45_r_normalized = get_data(jins_path, openface_path, mat_path)
+def start_aligner_tool(jins_path, openface_path, output_path):
+    jins_time, of_time, eog_v_normalized, au45_r_normalized = get_data(jins_path, openface_path)
 
     jins_time *= of_time_per_jins_time
 
@@ -178,7 +178,7 @@ for subject_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/"):
 
         # if we already aligned the file, don't bother trying to align it again
         if file_exists(alignment_output_path):
-            print("skipping file that has already been aligned")
+            print("skipping file that has already been aligned: {}".format(alignment_output_path))
             continue
 
         # check that the files exist ( because sometimes they don't :( )
@@ -200,4 +200,4 @@ for subject_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/"):
         create_corrected_file(openface_path, mat_path, corrected_openface_path)
 
         # run the alignment script so the human can align the data
-        start_aligner_tool(jins_path, corrected_openface_path, mat_path, alignment_output_path)
+        start_aligner_tool(jins_path, corrected_openface_path, alignment_output_path)
