@@ -56,68 +56,6 @@ X_all, y_all, groups, feature_names, subjects, labels, class_names = get_data(us
 
 
 
-# print("loading pickled data")
-# (X_all, y_all, groups, feature_names) = load_object("all_data.pkl")
-
-
-# # accumulate the data for the all the subjects
-# print("loading raw data into memory")
-# for subject in subjects:
-#     # subject_data = np.zeros(shape=(0,201,10))
-#     for label in labels:
-#         path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.mat".format(subject, label)
-
-#         # [ trial * window frames * sensor channels ]
-#         matlab_object = scipy.io.loadmat(path)
-
-#         subject_matrix = matlab_object['data_chunk']
-#         # subject_data = np.concatenate((subject_data, subject_matrix), axis=0)
-#         groups += [subject]*subject_matrix.shape[0]
-#         y_all += [label]*subject_matrix.shape[0]
-
-#         for trial in range(subject_matrix.shape[0]):
-#             raw_window = subject_matrix[trial,:,:]
-#             # print(raw_window.shape)
-#             if X_all_raw is None:
-#                 X_all_raw = np.empty(shape=(0,len(raw_window), 10), dtype=float)
-#             # print(X_all_raw.shape)
-#             # exit()
-#             X_all_raw = np.concatenate((X_all_raw, raw_window[np.newaxis,:,:]), axis=0)
-
-
-# print("normalizing data")
-# # normalize accelerometer signals
-# a = np.mean(np.std(X_all_raw[:,:,0:3], axis=2))
-# X_all_raw[:,:,0:3] = X_all_raw[:,:,0:3] / a
-
-# # normalize gyroscope signals
-# a = np.mean(np.std(X_all_raw[:,:,3:6], axis=2))
-# X_all_raw[:,:,3:6] = X_all_raw[:,:,3:6] / a
-
-# # normalize eog signals
-# a = np.mean(np.std(X_all_raw[:,:,6:], axis=2))
-# X_all_raw[:,:,6:10] = X_all_raw[:,:,6:10] / a
-
-
-# print("extracting features")
-# for trial in tqdm(range(X_all_raw.shape[0])):
-#     feature_extracted_window, feature_names = get_features(X_all_raw[trial,:,:])
-#     feature_extracted_window = np.array(feature_extracted_window)
-
-#     if X_all is None:
-#         X_all = np.empty(shape=(0,len(feature_extracted_window)), dtype=float)
-#     X_all = np.concatenate((X_all, feature_extracted_window[np.newaxis,:]), axis=0)
-
-
-# y_all = np.array(y_all)
-# # np.savetxt("y_all.txt", y_all)  # DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-# groups = np.array(groups)
-
-# print("pickling data")
-# save_object("all_data.pkl", (X_all, y_all, groups, feature_names))
-
-
-
 
 # print("reducing dimensions with PCA")
 # plt.figure(1)
