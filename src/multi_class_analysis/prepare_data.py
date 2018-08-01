@@ -2,7 +2,7 @@ import numpy as np
 import scipy
 from tqdm import tqdm
 
-from util import save_object, load_object
+from util import *
 from feature_extractor import get_features
 
 
@@ -13,10 +13,17 @@ if __name__ == "__main__":
 
 def get_data(use_precomputed=False):
     if use_precomputed:
-        print("loading pickled data")
-        (X_all, y_all, groups, feature_names, subjects, labels, class_names) = load_object("all_data.pkl")
+        filename = "all_data.pkl"
 
-        return (X_all, y_all, groups, feature_names, subjects, labels, class_names)
+        if not isfile(filename):
+            print("couldn't load pickle file. recomputing features")
+            return get_data(use_precomputed=False)
+
+        else:
+            print("loading pickled data")
+            (X_all, y_all, groups, feature_names, subjects, labels, class_names) = load_object(filename)
+
+            return (X_all, y_all, groups, feature_names, subjects, labels, class_names)
 
     else:
 

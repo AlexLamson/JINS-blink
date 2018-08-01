@@ -51,12 +51,12 @@ from prepare_data import get_data
 
 
 
-X_all, y_all, groups, feature_names, subjects, labels, class_names = get_data(use_precomputed=False)
+X_all, y_all, groups, feature_names, subjects, labels, class_names = get_data(use_precomputed=True)
 
 
 
 
-print("testing model")
+print("training & testing model using Leave One Out")
 test_accuracies = []
 train_accuracies = []
 f1_scores = []
