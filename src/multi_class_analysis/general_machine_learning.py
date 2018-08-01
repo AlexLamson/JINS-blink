@@ -171,37 +171,3 @@ plt.show()
 
 
 
-
-
-
-# some_arbitrary_trial = 0#-13#125#50
-# single_window = subject_data[some_arbitrary_trial,:,:]
-
-# x = np.arange(single_window.shape[0])
-
-# fig = plt.figure("Trial #{}".format(some_arbitrary_trial))
-# plt.title("Trial #{}".format(some_arbitrary_trial))
-
-# # accelerometer
-# plt.scatter(x, single_window[:,0], c='xkcd:red', alpha=0.5, label="accel x")
-# plt.scatter(x, single_window[:,1], c='xkcd:orange', alpha=0.5, label="accel y")
-# plt.scatter(x, single_window[:,2], c='xkcd:goldenrod', alpha=0.5, label="accel z")
-
-# # gyroscope
-# plt.scatter(x, single_window[:,3], c='xkcd:green', alpha=0.5, label="gyro x")
-# plt.scatter(x, single_window[:,4], c='xkcd:blue', alpha=0.5, label="gyro y")
-# plt.scatter(x, single_window[:,5], c='xkcd:indigo', alpha=0.5, label="gyro z")
-
-# # eog signals
-# plt.scatter(x, single_window[:,6], c='xkcd:violet', alpha=0.5, label="eog l")
-# plt.scatter(x, single_window[:,7], c='xkcd:gray', alpha=0.5, label="eog r")
-# plt.scatter(x, single_window[:,8], c='xkcd:black', alpha=0.5, label="eog h")
-# plt.scatter(x, single_window[:,9], c='xkcd:bright pink', alpha=0.5, label="eog v")
-
-# plt.xlabel("Frame #")
-# plt.ylabel("Magnitude of feature")
-# plt.legend(loc=2)
-# plt.show()
-
-
-
