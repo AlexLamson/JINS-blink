@@ -1,6 +1,7 @@
 # Project specific
 res/
 *.pickle
+*.pkl
 *.csv
 *.txt
 *.m
