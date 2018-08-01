@@ -43,13 +43,14 @@ def combine_data(jins_df, of_df, j_start, o_start, j_end, o_end):
 # turns the jins time column into relative times
 def time_column_to_delta(jins_df):
     # find the resolution by taking the difference of the first two timestamps
-    first_time = float( jins_df['TIME'].iloc[0][-3:] )
-    second_time = float( jins_df['TIME'].iloc[1][-3:] )
-    res = second_time - first_time
+    num_samples = 100
+    first_time = float(jins_df['TIME'].iloc[0].split(':')[-1])
+    second_time = float(jins_df['TIME'].iloc[num_samples-1].split(':')[-1])
+    frame_duration = (second_time - first_time)/num_samples
 
-    # the data is evenly spaced, so just apply the res time all the way down
+    # the data is evenly spaced, so just apply the frame_duration time all the way down
     for i in range(jins_df.shape[0]):
-        jins_df.at[i, 'TIME'] = i * res
+        jins_df.at[i, 'TIME'] = i * frame_duration
 
 
 def preprocess_dataframes(jins_df, openface_df):
