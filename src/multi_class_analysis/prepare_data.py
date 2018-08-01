@@ -8,7 +8,7 @@ from feature_extractor import get_features
 
 
 if __name__ == "__main__":
-    print("This file isn't meant to be run directly. Run general_machine_learning.py instead")
+    print("This file isn't meant to be run directly. Run train_machine_learning_model.py instead")
 
 
 def get_path(subject_id, label_id):

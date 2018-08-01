@@ -34,7 +34,7 @@ Signals
 '''
 
 if __name__ == "__main__":
-    print("This file isn't meant to be run directly. Run general_machine_learning.py instead")
+    print("This file isn't meant to be run directly. Run train_machine_learning_model.py instead")
 
 
 global_signal_names = "accel x,accel y,accel z,gyro x,gyro y,gyro z,eog l,eog r,eog h,eog v".split(',')
