@@ -46,40 +46,18 @@ from sklearn.mixture import GMM
 from sklearn.cluster import SpectralClustering, KMeans
 from math import floor
 
-
-from feature_extractor import get_features
-
-
-np.random.seed(19680801)
-
-
-def save_model(filename, regr):
-    pickle.dump(regr, open(filename, "wb"))
-
-def load_model(filename):
-    regr = pickle.load(open(filename, "rb"))
-    return regr
-
-def timestamp():
-    return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+from util import save_object, load_object
+# from feature_extractor import get_features
+from prepare_data import get_data
 
 
 
-
-subjects = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]
-labels = [1, 2, 3, 4, 5]
-class_names = "none,eyebrows lower,eyebrows raiser,cheek raiser,nose wrinkler,upper lip raiser,mouth open".split(',')
-
-X_all_raw = None
-X_all = None  # np.zeros(shape=(0,201*10))
-y_all = []
-groups = []
+X_all, y_all, groups, feature_names, subjects, labels, class_names = get_data(use_precomputed=False)
 
 
 
-
-print("loading pickled data")
-(X_all, y_all, groups, feature_names) = load_model("all_data.pkl")
+# print("loading pickled data")
+# (X_all, y_all, groups, feature_names) = load_object("all_data.pkl")
 
 
 # # accumulate the data for the all the subjects
@@ -136,7 +114,7 @@ print("loading pickled data")
 # groups = np.array(groups)
 
 # print("pickling data")
-# save_model("all_data.pkl", (X_all, y_all, groups, feature_names))
+# save_object("all_data.pkl", (X_all, y_all, groups, feature_names))
 
 
 
@@ -402,7 +380,7 @@ y_train = y_test = y_all
 
 # print("fitting decision tree")
 model.fit(X_all, y_all)
-save_model("decision_tree.pkl", model)
+save_object("decision_tree.pkl", model)
 
 # mean_train_accuracy = model.score(X_train, y_train)
 # print("train accuracy: {:.4f}".format(mean_train_accuracy))
