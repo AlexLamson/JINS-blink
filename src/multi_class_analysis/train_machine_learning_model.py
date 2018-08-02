@@ -23,28 +23,14 @@ Leave One Subject Out
     mean f1 score:
 
 '''
-import time
-import datetime
-import pickle
-import pydotplus
 from tqdm import tqdm
 import itertools
-import scipy.io
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
-from sklearn import tree
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import LinearSVC, SVC
 from sklearn.model_selection import LeaveOneGroupOut
-from sklearn.decomposition import PCA
-from sklearn.manifold import TSNE
-from sklearn.mixture import GMM
-from sklearn.cluster import SpectralClustering, KMeans
-from math import floor
 
 from util import save_object, load_object
 from prepare_data import get_data
