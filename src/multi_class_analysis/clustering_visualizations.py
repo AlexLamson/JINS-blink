@@ -23,10 +23,12 @@ plt.figure(1)
 pca = PCA(n_components=2)
 pca.fit(X_all)
 X_all_reduced = pca.transform(X_all)
-# print(X_all_reduced.shape)
-plt.scatter(X_all_reduced[:,0], X_all_reduced[:,1], c=y_all)
+for i,label in enumerate(labels):
+    mask = np.where(y_all == i+1)
+    plt.scatter(X_all_reduced[mask,0], X_all_reduced[mask,1], label=label)
 plt.set_cmap('hsv')
 plt.title("PCA n=2")
+plt.legend(loc=2)
 # plt.show()
 
 
