@@ -76,7 +76,7 @@ def get_features(window):
         add_90_percentile(window[:,i], signal_names[i], features, feature_names)
         add_histogram(window[:,i], signal_names[i], features, feature_names)
         add_median_absolute_deviation(window[:,i], signal_names[i], features, feature_names)
-        add_RMS(window[:,i], signal_names[i], features, feature_names)
+        add_energy(window[:,i], signal_names[i], features, feature_names)
         add_variance(window[:,i], signal_names[i], features, feature_names)
         add_iqr(window[:,i], signal_names[i], features, feature_names)
 
@@ -164,10 +164,10 @@ def add_median_absolute_deviation(signal, signal_name, features, feature_names):
     feature_names.append( "median absolute deviation of {}".format(signal_name) )
 
 
-def add_RMS(signal, signal_name, features, feature_names):
-    rms = np.mean(signal**2)
-    features.append(rms)
-    feature_names.append( "RMS of {}".format(signal_name) )
+def add_energy(signal, signal_name, features, feature_names):
+    energy = np.mean(signal**2)
+    features.append(energy)
+    feature_names.append( "energy of {}".format(signal_name) )
 
 
 def add_variance(signal, signal_name, features, feature_names):
