@@ -86,24 +86,22 @@ for train_index, test_index in tqdm(logo.split(X_all, y_all, groups), total=len(
         cnf_matrix_sum += cnf_matrix
 
 
-    # # Visualize the feature importance
-    # importance = model.feature_importances_
+# Visualize the feature importance
+importance = model.feature_importances_
 
-    # # zipped = list(reversed(sorted(zip(importance, feature_names), reverse=True)))
-    # zipped = list(reversed(sorted(zip(importance, feature_names), reverse=True)[:30]))
-    # zipped = [x for x in zipped if x[0] > 0]
-    # importance, feature_names = [x[0] for x in zipped], [x[1] for x in zipped]
+# zipped = list(reversed(sorted(zip(importance, feature_names), reverse=True)))
+zipped = list(reversed(sorted(zip(importance, feature_names), reverse=True)[:30]))
+zipped = [x for x in zipped if x[0] > 0]
+importance, feature_names = [x[0] for x in zipped], [x[1] for x in zipped]
+importance = np.array(importance)
 
-    # importance = np.array(importance)
-    # # exit()
-
-    # plt.barh(np.arange(importance.size), importance)
-    # if len(zipped) < 60:
-    #     plt.yticks(np.arange(importance.size), feature_names)
-    # # plt.xscale('log')
-    # plt.tight_layout()
-    # plt.show()
-    # exit()
+plt.barh(np.arange(importance.size), importance)
+if len(zipped) < 60:
+    plt.yticks(np.arange(importance.size), feature_names)
+# plt.xscale('log')
+plt.tight_layout()
+plt.show()
+# exit()
 
 
 test_accuracies = np.array(test_accuracies)
