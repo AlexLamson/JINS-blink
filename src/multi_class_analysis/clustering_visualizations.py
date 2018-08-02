@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
-from sklearn.mixture import GMM
+from sklearn.mixture import GaussianMixture
 from sklearn.cluster import SpectralClustering, KMeans
 
 from prepare_data import get_data
@@ -46,7 +46,7 @@ plt.title("t-SNE n=2")
 print("reducing dimensions with GMM then PCA")
 plt.figure(3)
 n_components = 6
-gmm = GMM(n_components=n_components, covariance_type='tied')
+gmm = GaussianMixture(n_components=n_components, covariance_type='tied')
 gmm.fit(X_all)
 X_all_reduced = gmm.predict_proba(X_all)
 
