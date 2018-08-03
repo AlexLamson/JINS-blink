@@ -30,8 +30,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import LeaveOneGroupOut
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 
 from util import save_object, load_object
 from prepare_data import get_data
@@ -39,8 +40,6 @@ from prepare_data import get_data
 
 
 X_all, y_all, groups, feature_names, subjects, labels, class_names = get_data(use_precomputed=True)
-
-
 
 
 print("training & testing model using Leave One Out")
@@ -61,6 +60,7 @@ for train_index, test_index in tqdm(logo.split(X_all, y_all, groups), total=len(
     # weights = {1:1, 2:1, 3:1, 4:3, 5:1} #, class_weight=weights
     # model = RandomForestClassifier(n_estimators=50, max_depth=8, min_samples_split=50, min_samples_leaf=40)
     model = RandomForestClassifier(n_estimators=20, max_depth=10, min_samples_split=30, min_samples_leaf=30)
+    # model = GradientBoostingClassifier(n_estimators=20, max_depth=3, min_samples_split=30, min_samples_leaf=30)
 
     # model = KNeighborsClassifier(n_neighbors=n_neighbors)
     # model = LinearSVC()
