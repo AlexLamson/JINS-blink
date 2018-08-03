@@ -27,9 +27,9 @@ def get_data(use_precomputed=False):
 
         else:
             print("loading pickled data")
-            (X_all, y_all, groups, feature_names, subjects, labels, class_names) = load_object(filename)
-
-            return (X_all, y_all, groups, feature_names, subjects, labels, class_names)
+            x = load_object(filename)
+            (X_all, y_all, groups, feature_names, subjects, labels, class_names) = x
+            return x
 
     else:
 
