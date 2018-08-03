@@ -52,10 +52,8 @@ def get_data(use_precomputed=False):
                 path = get_path(subject, label)
 
                 # [ trial * window frames * sensor channels ]
-                matlab_object = scipy.io.loadmat(path)
+                subject_matrix = scipy.io.loadmat(path)['data_chunk']
 
-                subject_matrix = matlab_object['data_chunk']
-                # subject_data = np.concatenate((subject_data, subject_matrix), axis=0)
                 groups += [subject]*subject_matrix.shape[0]
                 y_all += [label]*subject_matrix.shape[0]
 
