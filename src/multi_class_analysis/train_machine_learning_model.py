@@ -88,6 +88,18 @@ for train_index, test_index in tqdm(logo.split(X_all, y_all, groups), total=len(
         cnf_matrix_sum += cnf_matrix
 
 
+test_accuracies = np.array(test_accuracies)
+train_accuracies = np.array(train_accuracies)
+f1_scores = np.array(f1_scores)
+
+print("mean train accuracy: {}".format(np.mean(train_accuracy)))
+print("mean test accuracy: {}".format(np.mean(test_accuracy)))
+print("std dev test accuracy: {:.3f}".format(np.std(test_accuracies)))
+print("mean f1 score for each class: {}".format(np.mean(f1_scores, axis=0)))
+print("mean f1 score: {:.5f}".format(np.mean(np.mean(f1_scores, axis=0))))
+
+
+
 # Visualize the feature importance
 importance = model.feature_importances_
 
@@ -106,19 +118,9 @@ plt.show()
 # exit()
 
 
-test_accuracies = np.array(test_accuracies)
-train_accuracies = np.array(train_accuracies)
-f1_scores = np.array(f1_scores)
 
-print("mean train accuracy: {}".format(np.mean(train_accuracy)))
-print("mean test accuracy: {}".format(np.mean(test_accuracy)))
-print("std dev test accuracy: {:.3f}".format(np.std(test_accuracies)))
-print("mean f1 scores: {}".format(np.mean(f1_scores, axis=0)))
-
-
-
-# http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
 def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
+    # http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
     """
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
@@ -154,6 +156,3 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
 plt.figure()
 plot_confusion_matrix(cnf_matrix, classes=class_names[:5], normalize=True, title='Normalized confusion matrix')
 plt.show()
-
-
-
