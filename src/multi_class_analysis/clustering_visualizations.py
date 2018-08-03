@@ -13,7 +13,7 @@ X_all, y_all, groups, feature_names, subjects, labels, class_names = get_data(us
 
 
 def rand_jitter(arr):
-    stdev = .05*(max(arr)-min(arr))
+    stdev = 0.05*(max(arr)-min(arr))
     return arr + np.random.randn(len(arr)) * stdev
 
 
@@ -24,25 +24,25 @@ pca = PCA(n_components=2)
 pca.fit(X_all)
 X_all_reduced = pca.transform(X_all)
 for i,label in enumerate(labels):
-    mask = np.where(y_all == i+1)
-    plt.scatter(X_all_reduced[mask,0], X_all_reduced[mask,1], label=label)
-plt.set_cmap('hsv')
-plt.title("PCA n=2")
+    mask = np.where(y_all == label)
+    plt.scatter(X_all_reduced[mask,0], X_all_reduced[mask,1], label=class_names[i])
 plt.legend(loc=2)
-# plt.show()
+plt.set_cmap('hsv')
+plt.title("Data => PCA {}->2".format(X_all.shape[1]))
+plt.show()
 
 
-
-plt.figure(2)
 print("reducing dimensions with t-SNE")
+plt.figure(2)
 tsne = TSNE(n_components=2)
 X_all_reduced = tsne.fit_transform(X_all)
-# print(X_all_reduced.shape)
-plt.scatter(X_all_reduced[:,0], X_all_reduced[:,1], c=y_all)
+for i,label in enumerate(labels):
+    mask = np.where(y_all == label)
+    plt.scatter(X_all_reduced[mask,0], X_all_reduced[mask,1], label=class_names[i])
+plt.legend(loc=2)
 plt.set_cmap('hsv')
-plt.title("t-SNE n=2")
-# plt.show()
-
+plt.title("Dat a=> t-SNE {}->2".format(X_all.shape[1]))
+plt.show()
 
 
 print("reducing dimensions with GMM then PCA")
@@ -59,19 +59,20 @@ X_all_reduced = pca.transform(X_all_reduced)
 X_all_reduced[:,0] = rand_jitter(X_all_reduced[:,0])
 X_all_reduced[:,1] = rand_jitter(X_all_reduced[:,1])
 
-# print(X_all_reduced.shape)
-plt.scatter(X_all_reduced[:,0], X_all_reduced[:,1], c=y_all)
+for i,label in enumerate(labels):
+    mask = np.where(y_all == label)
+    plt.scatter(X_all_reduced[mask,0], X_all_reduced[mask,1], label=class_names[i])
+plt.legend(loc=2)
 plt.set_cmap('hsv')
-plt.title("data -> GMM n={} -> PCA n=2".format(n_components))
-# plt.show()
+plt.title("data => GMM {0}->{1} => PCA {1}->2".format(X_all.shape[1], n_components))
+plt.show()
 
 
 
-n_components = 7
 print("reducing dimensions with spectral clustering then PCA")
 plt.figure(4)
+n_components = 7
 spectral = SpectralClustering(n_clusters=n_components)
-# spectral.fit(X_all)
 X_all_reduced = spectral.fit_predict(X_all)
 
 # one-hot-ify it
@@ -86,19 +87,20 @@ X_all_reduced = pca.transform(X_all_reduced)
 X_all_reduced[:,0] = rand_jitter(X_all_reduced[:,0])
 X_all_reduced[:,1] = rand_jitter(X_all_reduced[:,1])
 
-# print(X_all_reduced.shape)
-plt.scatter(X_all_reduced[:,0], X_all_reduced[:,1], c=y_all)
+for i,label in enumerate(labels):
+    mask = np.where(y_all == label)
+    plt.scatter(X_all_reduced[mask,0], X_all_reduced[mask,1], label=class_names[i])
+plt.legend(loc=2)
 plt.set_cmap('hsv')
-plt.title("data -> spectral clustering n={} -> PCA n=2".format(n_components))
-# plt.show()
+plt.title("data => spectral clustering {0}->{1} => PCA {1}->2".format(X_all.shape[1], n_components))
+plt.show()
 
 
 
-n_components = 5
 print("reducing dimensions with k-means clustering then PCA")
 plt.figure(5)
+n_components = 5
 kmeans = KMeans(n_clusters=n_components)
-# kmeans.fit(X_all)
 X_all_reduced = kmeans.fit_predict(X_all)
 
 # one-hot-ify it
@@ -113,12 +115,11 @@ X_all_reduced = pca.transform(X_all_reduced)
 X_all_reduced[:,0] = rand_jitter(X_all_reduced[:,0])
 X_all_reduced[:,1] = rand_jitter(X_all_reduced[:,1])
 
-# print(X_all_reduced.shape)
-plt.scatter(X_all_reduced[:,0], X_all_reduced[:,1], c=y_all)
+for i,label in enumerate(labels):
+    mask = np.where(y_all == label)
+    plt.scatter(X_all_reduced[mask,0], X_all_reduced[mask,1], label=class_names[i])
+plt.legend(loc=2)
 plt.set_cmap('hsv')
-plt.title("data -> k-means clustering n={} -> PCA n=2".format(n_components))
-# plt.show()
-
-
-
+plt.title("data => k-means clustering {0}->{1} => PCA {1}->2".format(X_all.shape[1], n_components))
 plt.show()
+
