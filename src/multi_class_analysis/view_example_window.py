@@ -4,9 +4,6 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 
-
-
-
 subjects = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]
 labels = [1, 2, 3, 4, 5]
 class_names = "none,eyebrows lower,eyebrows raiser,cheek raiser,nose wrinkler,upper lip raiser,mouth open".split(',')
@@ -17,10 +14,25 @@ y_all = []
 groups = []
 
 
-def get_path(subject_id, label_id):
-    # path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.mat".format(subject_id, label_id)
-    path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}_treadmill.mat".format(subject_id, label_id)
-    return path
+
+
+# to change the path, change the function in prepare_data.py
+from prepare_data import get_path
+
+
+
+# change these values to show data for other subjects/labels/trials
+graph_subject = 103
+graph_label = 5  # in range [1,5]
+graph_trial = 1  # in range [1,20]
+
+
+
+
+
+# map from (subject, label, subject_trial) -> X_all index
+index_dict = dict()
+curr_index = 0
 
 
 # accumulate the data for the all the subjects
@@ -31,10 +43,12 @@ for subject in tqdm(subjects):
         path = get_path(subject, label)
 
         # [ trial * window frames * sensor channels ]
-        matlab_object = scipy.io.loadmat(path)
+        subject_matrix = scipy.io.loadmat(path)['data_chunk']
 
-        subject_matrix = matlab_object['data_chunk']
-        # subject_data = np.concatenate((subject_data, subject_matrix), axis=0)
+        for subject_trial in range(subject_matrix.shape[0]):
+            index_dict[(subject, label, subject_trial)] = curr_index
+            curr_index += 1
+
         groups += [subject]*subject_matrix.shape[0]
         y_all += [label]*subject_matrix.shape[0]
 
@@ -65,29 +79,29 @@ X_all_raw[:,:,6:10] = X_all_raw[:,:,6:10] / a
 
 
 
-some_arbitrary_trial = 0   # -13#125#50
-print("plotting window for trial at index {}".format(some_arbitrary_trial))
 
 
-
-single_window = X_all_raw[some_arbitrary_trial,:,:]
-
+window_index = index_dict[graph_subject, graph_label, graph_trial-1]
+print("plotting window for trial at index {}".format(window_index))
+single_window = X_all_raw[window_index,:,:]
 x = np.arange(single_window.shape[0])
 
-fig = plt.figure("Trial #{}".format(some_arbitrary_trial))
-plt.title("Trial #{}".format(some_arbitrary_trial))
+# set the title of the graph
+title = "Subject {} '{}' Trial {}".format(graph_subject, class_names[graph_label-1], graph_trial).title()
+fig = plt.figure(title)
+plt.title(title)
 
-# accelerometer
+# graph the accelerometer
 plt.scatter(x, single_window[:,0], c='xkcd:red', alpha=0.5, label="accel x")
 plt.scatter(x, single_window[:,1], c='xkcd:orange', alpha=0.5, label="accel y")
 plt.scatter(x, single_window[:,2], c='xkcd:goldenrod', alpha=0.5, label="accel z")
 
-# gyroscope
+# graph the gyroscope
 plt.scatter(x, single_window[:,3], c='xkcd:green', alpha=0.5, label="gyro x")
 plt.scatter(x, single_window[:,4], c='xkcd:blue', alpha=0.5, label="gyro y")
 plt.scatter(x, single_window[:,5], c='xkcd:indigo', alpha=0.5, label="gyro z")
 
-# eog signals
+# graph the eog signals
 plt.scatter(x, single_window[:,6], c='xkcd:violet', alpha=0.5, label="eog l")
 plt.scatter(x, single_window[:,7], c='xkcd:gray', alpha=0.5, label="eog r")
 plt.scatter(x, single_window[:,8], c='xkcd:black', alpha=0.5, label="eog h")
