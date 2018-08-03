@@ -10,6 +10,8 @@ S -> check that feature importances are computed the same as in "EarBit: Using W
 SA-> make one file for each plot (move the code that compute X_all & y_all to a file too)
 A -> add legends to clusterings plots
 S -> add ensemble model
+A -> tune the max_depth of the gradient boosted trees classifier
+A -> add code to make a scatterplot of whatever features is interesting
 
 
 General Notes
