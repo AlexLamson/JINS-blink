@@ -13,7 +13,8 @@ if __name__ == "__main__":
 
 
 def get_path(subject_id, label_id):
-    path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.mat".format(subject_id, label_id)
+    # path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.mat".format(subject_id, label_id)
+    path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}_treadmill.mat".format(subject_id, label_id)
     return path
 
 
