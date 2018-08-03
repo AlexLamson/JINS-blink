@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.linalg import norm
+from numpy.linalg import norm
 from scipy.stats import iqr
 from math import sqrt
 
