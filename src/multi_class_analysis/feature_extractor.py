@@ -62,6 +62,7 @@ def get_features(window):
         window = add_signal_derivative(window[:,i], original_signal_names[i], window, signal_names)
         window = add_signal_cumsum(window[:,i], original_signal_names[i], window, signal_names)
         window = add_signal_fft(window[:,i], original_signal_names[i], window, signal_names)
+        pass
 
 
     # compute some features from those signals
@@ -74,7 +75,7 @@ def get_features(window):
         add_10_percentile(window[:,i], signal_names[i], features, feature_names)
         add_median(window[:,i], signal_names[i], features, feature_names)
         add_90_percentile(window[:,i], signal_names[i], features, feature_names)
-        add_histogram(window[:,i], signal_names[i], features, feature_names)
+        # add_histogram(window[:,i], signal_names[i], features, feature_names)
         add_median_absolute_deviation(window[:,i], signal_names[i], features, feature_names)
         add_energy(window[:,i], signal_names[i], features, feature_names)
         add_variance(window[:,i], signal_names[i], features, feature_names)
