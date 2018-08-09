@@ -11,6 +11,8 @@ SA-> make one file for each plot (move the code that compute X_all & y_all to a 
 A -> add legends to clusterings plots
 S -> add ensemble model
 A -> tune the max_depth of the gradient boosted trees classifier
+S -> measure differences between feature importances between treadmill and no treadmill
+S -> see if there needs be a separate model for treadmill and no treadmill, or if it can be all one model
 
 
 General Notes
