@@ -91,17 +91,15 @@ def start_aligner_tool(jins_path, openface_path, output_path):
     initial_fine_tune = 0
     intial_shift_delta = 0
 
-    jins_plot, = plt.plot(jins_time, eog_v_normalized, lw=2, color='blue')
-    of_plot, = plt.plot(of_time, au45_r_normalized, lw=2, color='red')
-    # jins_plot, = plt.plot(jins_time, eog_v_normalized, lw=2, color='xkcd:cerulean')
-    # of_plot, = plt.plot(of_time, au45_r_normalized, lw=2, color='xkcd:light red')
+    # jins_plot, = plt.plot(jins_time, eog_v_normalized, lw=2, color='xkcd:blue')
+    # of_plot, = plt.plot(of_time, au45_r_normalized, lw=2, color='xkcd:red')
+    jins_plot, = plt.plot(jins_time, eog_v_normalized, lw=2, color='xkcd:cerulean')
+    of_plot, = plt.plot(of_time, au45_r_normalized, lw=2, color='xkcd:light red')
     plt.axis([0, 45, -1, 1])
 
     axcolor = 'lightgoldenrodyellow'
-    # ax_shift_delta = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
-    # axamp = plt.axes([0.25, 0.15, 0.65, 0.03], facecolor=axcolor)
-    ax_shift_delta = plt.axes([0.25, 0.1, 0.65, 0.03])
-    axamp = plt.axes([0.25, 0.15, 0.65, 0.03])
+    ax_shift_delta = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
+    axamp = plt.axes([0.25, 0.15, 0.65, 0.03], facecolor=axcolor)
 
     shift_delta_slider = Slider(ax_shift_delta, 'Shift data', -30, 10, valinit=intial_shift_delta)
     fine_tune_slider = Slider(axamp, 'Fine tuning', -1, 1, valinit=initial_fine_tune)
