@@ -14,8 +14,16 @@ X_all, y_all, groups, feature_names, subjects, labels, class_names = get_data(us
 
 try:
     # feature_index = [('90' in x and 'deriv' in x and 'eog h' in x) for x in feature_names].index(True)
-    feature_index = [('max of eog v' in x) for x in feature_names].index(True)
+    feature_index = [('max of eog v' in x) for x in feature_names].index(True) #super great
     # feature_index = [('min' in x and 'deriv' in x and 'eog l' in x) for x in feature_names].index(True)
+
+    # feature_index = [('std dev of eog h' in x) for x in feature_names].index(True) #meh
+    # feature_index = [('std dev of eog v' in x) for x in feature_names].index(True) #quite good
+    # feature_index = [('std dev of eog r' in x) for x in feature_names].index(True) #same as previous
+    # feature_index = [('std dev of eog l' in x) for x in feature_names].index(True) #same as previous
+
+    # feature_index = [('energy of eog l' in x) for x in feature_names].index(True) #different std devs
+    # feature_index = [('max of gyro z' in x) for x in feature_names].index(True) #very bad
 except ValueError as e:
     print("Feature not found. Exiting.")
     exit()
