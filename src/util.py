@@ -103,8 +103,9 @@ def load_obj(filename, print_debug_info=True):
         return obj
 
 
-def file_exists(fname):
-    return isfile(fname)
+def file_exists(filename):
+    filename = fix_path(filename)
+    return isfile(filename)
 
 
 def all_files_in_folder(some_directory):
