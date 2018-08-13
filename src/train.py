@@ -36,7 +36,7 @@ if __name__ == '__main__':
         save_obj((inputs, outputs), features_pickle_filename)
 
 
-    # uncomment line to sample it so the models train faster
+    # uncomment this to sample it so the models train faster
     print("sampling (time-based) less data for faster training")
     seconds_of_data = 60*30
     inputs, outputs = inputs[:seconds_of_data*100], outputs[:seconds_of_data*100]
@@ -67,7 +67,6 @@ if __name__ == '__main__':
     """
     model = classification_decision_tree.get_model()
 
-    
     print("fitting model & performing cross validation")
     fitness, model = fit_and_evaluate_classifier(model, X_train_c, y_train_c)
 
@@ -81,4 +80,3 @@ if __name__ == '__main__':
     print('fitting whole dataset & saving model')
     model.fit(inputs, outputs_c)  # be sure to re-train the best model on the full data-set
     save_obj(model, 'model.pickle')
-

@@ -1,11 +1,10 @@
 from util import *
 
-import os    
+import os
 import pandas as pd
 
 
 def get_all_data(data_folder_name):
-    
     # iterate over each data folder
     trial_folders = all_folders_in_folder(data_folder_name)
     trial_folders = [os.path.join(data_folder_name, x) for x in trial_folders]
