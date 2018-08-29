@@ -1,3 +1,5 @@
+print("loading libraries")
+
 import pickle
 import numpy as np
 from os.path import isfile
