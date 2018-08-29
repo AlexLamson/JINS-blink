@@ -1,31 +1,3 @@
-'''
-To do (sorted approximately by priority)
-========================================
-S -> get rid of very weird features so it becomes easier to interpret
-A -> double check f1 scores
-S -> email f1 scores & accuracy scores & stuff
-S -> email graph of all feature importances
-S -> email graph of top feature importances
-S -> check that feature importances are computed the same as in "EarBit: Using Wearable Sensors to Detect Eating Episodes in Unconstrained Environments"
-SA-> make one file for each plot (move the code that compute X_all & y_all to a file too)
-A -> add legends to clusterings plots
-S -> add ensemble model
-A -> tune the max_depth of the gradient boosted trees classifier
-S -> measure differences between feature importances between treadmill and no treadmill
-S -> see if there needs be a separate model for treadmill and no treadmill, or if it can be all one model
-
-
-General Notes
-=============
-
-768 features
-
-Leave One Subject Out
-    mean of accuracy:
-    std of accuracy:
-    mean f1 score:
-
-'''
 from tqdm import tqdm
 import itertools
 import numpy as np
