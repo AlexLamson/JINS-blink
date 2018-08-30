@@ -149,23 +149,23 @@ def start_aligner_tool(jins_path, openface_path, output_path):
     plt.show()
 
 
-# DEBUGGING
-# DEBUGGING
-# path = '../../res/data5/'
-# jins_filename, openface_filename = get_jins_openface_csv(path)
-# output_path = "../../res/data5/alignment.pickle"
+# # DEBUGGING
+# # DEBUGGING
+# # path = '../../res/data5/'
+# # jins_filename, openface_filename = get_jins_openface_csv(path)
+# # output_path = "../../res/data5/alignment.pickle"
 
-subject_id, label_id = "101", "label0"
-openface_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/oface/{0}_{1}.csv".format(subject_id, label_id)
-jins_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/jins/{0}_{1}.csv".format(subject_id, label_id)
-output_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/alignment.pickle".format(subject_id, label_id)
+# subject_id, label_id = "101", "label0"
+# openface_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/oface/{0}_{1}.csv".format(subject_id, label_id)
+# jins_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/jins/{0}_{1}.csv".format(subject_id, label_id)
+# output_path = "C:/Data_Experiment_W!NCE/{0}/FACS/{1}/alignment.pickle".format(subject_id, label_id)
 
-# print(jins_filename)
+# # print(jins_filename)
+# # exit()
+# start_aligner_tool(jins_path, openface_path, output_path)
 # exit()
-start_aligner_tool(jins_path, openface_path, output_path)
-exit()
-# DEBUGGING
-# DEBUGGING
+# # DEBUGGING
+# # DEBUGGING
 
 
 for subject_id in all_folders_in_folder("C:/Data_Experiment_W!NCE/"):
