@@ -10,12 +10,6 @@ reference for motion features
 =============================
 https://archive.ics.uci.edu/ml/datasets/Smartphone-Based+Recognition+of+Human+Activities+and+Postural+Transitions
 
-
-features to add
-===============
-peaks
-
-
 Input shape
 ===========
 [window frames * signals]
@@ -40,16 +34,15 @@ global_signal_names = "accel x,accel y,accel z,gyro x,gyro y,gyro z,eog l,eog r,
 # global_signal_names = "accel x,accel y".split(',')
 
 
-def get_features(window):
+def get_features(window, include_eog=True, include_imu=True):
     signal_names = global_signal_names.copy()
     features = []
     feature_names = []
 
-    # extract only eog signals
-    window = window[:,6:]
-
-    # extract accel y signal only
-    # window = window[:,:1]
+    if not include_eog:
+        window = window[:,:-4]
+    if not include_imu:
+        window = window[:,6:]
 
     # # compute motion magnitudes
     accel_magnitudes = norm(window[:,0:3], axis=1)

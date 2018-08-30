@@ -16,7 +16,7 @@ from prepare_data import get_data
 
 
 use_precomputed = False
-X_all, y_all, groups, feature_names, subjects, labels, class_names, is_moving_data = get_data(use_precomputed=use_precomputed)
+X_all, y_all, groups, feature_names, subjects, labels, class_names, is_moving_data, include_eog, include_imu = get_data(use_precomputed=use_precomputed)
 
 
 # def f1_score(y_test, y_pred, average=None):

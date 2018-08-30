@@ -11,6 +11,8 @@ subjects = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]
 labels = [1, 2, 3, 4, 5]
 class_names = "none,eyebrows lower,eyebrows raiser,cheek raiser,nose wrinkler,upper lip raiser,mouth open".split(',')
 is_moving_data = True
+include_eog = True
+include_imu = True
 
 
 if __name__ == "__main__":
@@ -110,7 +112,7 @@ def get_data(use_precomputed=False):
 
 
 
-        data_blob = (X_all, y_all, groups, feature_names, subjects, labels, class_names, is_moving_data)
+        data_blob = (X_all, y_all, groups, feature_names, subjects, labels, class_names, is_moving_data, include_eog, include_imu)
 
 
 
