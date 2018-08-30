@@ -7,14 +7,21 @@ from util import *
 from feature_extractor import get_features
 
 
+subjects = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]
+labels = [1, 2, 3, 4, 5]
+class_names = "none,eyebrows lower,eyebrows raiser,cheek raiser,nose wrinkler,upper lip raiser,mouth open".split(',')
+is_moving_data = True
+
 
 if __name__ == "__main__":
     print("This file isn't meant to be run directly. Run train_machine_learning_model.py instead")
 
 
-def get_path(subject_id, label_id):
-    path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.mat".format(subject_id, label_id)
-    # path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}_treadmill.mat".format(subject_id, label_id)
+def get_path(subject_id, label_id, is_moving_data):
+    if is_moving_data:
+        path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}_treadmill.mat".format(subject_id, label_id)
+    else:
+        path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.mat".format(subject_id, label_id)
     return path
 
 
@@ -28,15 +35,15 @@ def get_data(use_precomputed=False):
 
         else:
             print("loading pickled data")
-            x = load_object(filename)
-            (X_all, y_all, groups, feature_names, subjects, labels, class_names) = x
-            return x
+            return load_object(filename)
 
     else:
 
-        subjects = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]
-        labels = [1, 2, 3, 4, 5]
-        class_names = "none,eyebrows lower,eyebrows raiser,cheek raiser,nose wrinkler,upper lip raiser,mouth open".split(',')
+        # # subjects = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]
+        # subjects = [101,103,104,106,107,108,109,110,111,112,113,114,115,116,117]
+        # labels = [1, 2, 3, 4, 5]
+        # class_names = "none,eyebrows lower,eyebrows raiser,cheek raiser,nose wrinkler,upper lip raiser,mouth open".split(',')
+        # is_moving_data = False
 
         X_all_raw = None
         X_all = None
@@ -49,7 +56,7 @@ def get_data(use_precomputed=False):
         for subject in subjects:
             # subject_data = np.zeros(shape=(0,201,10))
             for label in labels:
-                path = get_path(subject, label)
+                path = get_path(subject, label, is_moving_data)
 
                 # [ trial * window frames * sensor channels ]
                 subject_matrix = scipy.io.loadmat(path)['data_chunk']
@@ -70,15 +77,21 @@ def get_data(use_precomputed=False):
         print("normalizing data")
         # normalize accelerometer signals
         a = np.mean(np.std(X_all_raw[:,:,0:3], axis=2))
-        X_all_raw[:,:,0:3] = X_all_raw[:,:,0:3] / a
+        b = np.mean(np.mean(X_all_raw[:,:,0:3], axis=2))
+        X_all_raw[:,:,0:3] = (X_all_raw[:,:,0:3] - b) / a
 
         # normalize gyroscope signals
         a = np.mean(np.std(X_all_raw[:,:,3:6], axis=2))
-        X_all_raw[:,:,3:6] = X_all_raw[:,:,3:6] / a
+        b = np.mean(np.mean(X_all_raw[:,:,3:6], axis=2))
+        X_all_raw[:,:,3:6] = (X_all_raw[:,:,3:6] - b) / a
 
         # normalize eog signals
-        a = np.mean(np.std(X_all_raw[:,:,6:], axis=2))
-        X_all_raw[:,:,6:10] = X_all_raw[:,:,6:10] / a
+        # a = np.mean(np.std(X_all_raw[:,:,6:], axis=2))
+        # b = np.mean(np.mean(X_all_raw[:,:,6:], axis=2))
+        # X_all_raw[:,:,6:10] = (X_all_raw[:,:,6:10] - b) / a
+
+        mean_eog_signals = np.mean(np.mean(X_all_raw[:,:,6:10], axis=1), axis=0)
+        X_all_raw[:,:,6:10] = X_all_raw[:,:,6:10] - mean_eog_signals
 
 
         print("extracting features")
@@ -95,7 +108,13 @@ def get_data(use_precomputed=False):
         # np.savetxt("y_all.txt", y_all)  # DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
         groups = np.array(groups)
 
-        print("pickling data")
-        save_object("all_data.pkl", (X_all, y_all, groups, feature_names, subjects, labels, class_names))
 
-        return (X_all, y_all, groups, feature_names, subjects, labels, class_names)
+
+        data_blob = (X_all, y_all, groups, feature_names, subjects, labels, class_names, is_moving_data)
+
+
+
+        print("pickling data")
+        save_object("all_data.pkl", data_blob)
+
+        return data_blob

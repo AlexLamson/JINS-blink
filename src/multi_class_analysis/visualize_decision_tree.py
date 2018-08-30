@@ -8,7 +8,7 @@ from prepare_data import get_data
 
 
 
-X_all, y_all, groups, feature_names, subjects, labels, class_names = get_data(use_precomputed=True)
+X_all, y_all, groups, feature_names, subjects, labels, class_names, is_moving_data = get_data(use_precomputed=True)
 
 
 
