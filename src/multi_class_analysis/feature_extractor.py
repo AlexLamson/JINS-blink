@@ -2,6 +2,7 @@ import numpy as np
 from numpy.linalg import norm
 from scipy.stats import iqr
 from math import sqrt
+import scipy.io
 
 
 '''
@@ -33,11 +34,10 @@ Signals
 [9] eog v
 '''
 
-if __name__ == "__main__":
-    print("This file isn't meant to be run directly. Run train_machine_learning_model.py instead")
-
 
 global_signal_names = "accel x,accel y,accel z,gyro x,gyro y,gyro z,eog l,eog r,eog h,eog v".split(',')
+# global_signal_names = "eog l,eog r,eog h,eog v".split(',')
+# global_signal_names = "accel x,accel y".split(',')
 
 
 def get_features(window):
@@ -45,8 +45,13 @@ def get_features(window):
     features = []
     feature_names = []
 
+    # extract only eog signals
+    window = window[:,6:]
 
-    # compute motion magnitudes
+    # extract accel y signal only
+    # window = window[:,:1]
+
+    # # compute motion magnitudes
     accel_magnitudes = norm(window[:,0:3], axis=1)
     window = np.concatenate((window, accel_magnitudes[:,np.newaxis]), axis=1)
     signal_names += ["accel mag"]
@@ -59,30 +64,53 @@ def get_features(window):
     # compute more signals
     original_signal_names = signal_names.copy()
     for i in range(len(original_signal_names)):
-        window = add_signal_derivative(window[:,i], original_signal_names[i], window, signal_names)
-        window = add_signal_cumsum(window[:,i], original_signal_names[i], window, signal_names)
-        window = add_signal_fft(window[:,i], original_signal_names[i], window, signal_names)
+        # window = add_signal_derivative(window[:,i], original_signal_names[i], window, signal_names)
+        # window = add_signal_cumsum(window[:,i], original_signal_names[i], window, signal_names)
+        # window = add_signal_fft(window[:,i], original_signal_names[i], window, signal_names)
         pass
+
+
+    # for i in [0, 1, 2, 3, 4, 5, 10, 11]:
+    for i in [9, 10, 11]:
+        window = add_signal_fft(window[:,i], original_signal_names[i], window, signal_names)
+    # window = add_signal_fft(window[:,1], original_signal_names[i], window, signal_names)
 
 
     # compute some features from those signals
     for i in range(len(signal_names)):
-        add_zero_crossings(window[:,i], signal_names[i], features, feature_names)
+        # print(window.shape)
+
+        add_mean_crossings(window[:,i], signal_names[i], features, feature_names)
         add_std_dev(window[:,i], signal_names[i], features, feature_names)
         add_mean(window[:,i], signal_names[i], features, feature_names)
         add_max(window[:,i], signal_names[i], features, feature_names)
         add_min(window[:,i], signal_names[i], features, feature_names)
-        add_10_percentile(window[:,i], signal_names[i], features, feature_names)
+        # add_10_percentile(window[:,i], signal_names[i], features, feature_names)
         add_median(window[:,i], signal_names[i], features, feature_names)
-        add_90_percentile(window[:,i], signal_names[i], features, feature_names)
+        # add_90_percentile(window[:,i], signal_names[i], features, feature_names)
         # add_histogram(window[:,i], signal_names[i], features, feature_names)
-        add_median_absolute_deviation(window[:,i], signal_names[i], features, feature_names)
+        # add_median_absolute_deviation(window[:,i], signal_names[i], features, feature_names)
         add_energy(window[:,i], signal_names[i], features, feature_names)
-        add_variance(window[:,i], signal_names[i], features, feature_names)
-        add_iqr(window[:,i], signal_names[i], features, feature_names)
+        # add_variance(window[:,i], signal_names[i], features, feature_names)
+        # add_iqr(window[:,i], signal_names[i], features, feature_names)
+
+        # add_mean_crossings(window[:,i], signal_names[i], features, feature_names)
+        # add_std_dev(window[:,i], signal_names[i], features, feature_names)
+        # add_mean(window[:,i], signal_names[i], features, feature_names)
+        # add_max(window[:,i], signal_names[i], features, feature_names)
+        # add_min(window[:,i], signal_names[i], features, feature_names)
+        # # add_10_percentile(window[:,i], signal_names[i], features, feature_names)
+        # add_median(window[:,i], signal_names[i], features, feature_names)
+        # # add_90_percentile(window[:,i], signal_names[i], features, feature_names)
+        # # add_histogram(window[:,i], signal_names[i], features, feature_names)
+        # # add_median_absolute_deviation(window[:,i], signal_names[i], features, feature_names)
+        # add_energy(window[:,i], signal_names[i], features, feature_names)
+        # # add_variance(window[:,i], signal_names[i], features, feature_names)
+        # # add_iqr(window[:,i], signal_names[i], features, feature_names)
 
 
     # print("{} features: {}".format(len(feature_names), ", ".join([x for x in feature_names])))
+    # print(len(feature_names))
     # exit()
     return features, feature_names
 
@@ -103,18 +131,26 @@ def add_signal_cumsum(signal, signal_name, window, signal_names):
 
 def add_signal_fft(signal, signal_name, window, signal_names):
     fft = np.abs(np.fft.fft(signal))
+    # print(fft)
+    # print(fft.shape)
+    
+    # import matplotlib.pyplot as plt
+    # plt.scatter(np.arange(len(fft)), fft)
+    # plt.show()
+    
+    
     window = np.concatenate((window, fft[:,np.newaxis]), axis=1)
     signal_names += ["fft of {}".format(signal_name)]
     return window
 
 
 
-def add_zero_crossings(signal, signal_name, features, feature_names):
+def add_mean_crossings(signal, signal_name, features, feature_names):
     mean_adjusted_signal = signal - np.mean(signal)
-    zero_crossings = ((mean_adjusted_signal[:-1] * mean_adjusted_signal[1:]) < 0).sum()
-    # zero_crossings = ((signal[:-1] * signal[1:]) < 0).sum()
-    features.append(zero_crossings)
-    feature_names.append( "# zero crossings of {}".format(signal_name) )
+    mean_crossings = ((mean_adjusted_signal[:-1] * mean_adjusted_signal[1:]) < 0).sum()
+    # mean_crossings = ((signal[:-1] * signal[1:]) < 0).sum()
+    features.append(mean_crossings)
+    feature_names.append( "# mean crossings of {}".format(signal_name) )
 
 
 def add_std_dev(signal, signal_name, features, feature_names):
@@ -184,7 +220,7 @@ def add_iqr(signal, signal_name, features, feature_names):
 
 
 def add_histogram(signal, signal_name, features, feature_names):
-    bins = 5
+    bins = 7
     hist = np.histogram(signal, bins=bins)[0]
     features.extend(hist)
     feature_names.extend( ["histogram of {} #{}/{}".format(signal_name, x+1, bins) for x in range(bins)] )
@@ -198,3 +234,16 @@ def mad(arr):
     arr = np.ma.array(arr).compressed()  # should be faster to not use masked arrays.
     med = np.median(arr)
     return np.median(np.abs(arr - med))
+
+
+if __name__ == "__main__":
+    # print("This file isn't meant to be run directly. Run train_machine_learning_model.py instead")
+
+    subject_id, label_id = 101, 1
+    path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.mat".format(subject_id, label_id)
+
+    # [ trial * window frames * sensor channels ]
+    subject_matrix = scipy.io.loadmat(path)['data_chunk']
+    sample_window = subject_matrix[0, :, :]
+    features, feature_names = get_features(sample_window)
+    print("There are currently {} features being used".format(len(features)))
