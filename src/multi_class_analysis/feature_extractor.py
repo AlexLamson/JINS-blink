@@ -40,26 +40,42 @@ global_signal_names = "accel x,accel y,accel z,gyro x,gyro y,gyro z,eog l,eog r,
 
 def get_features(window, include_eog=True, include_imu=True):
     signal_names = global_signal_names.copy()
+    original_signal_names = signal_names.copy()
     features = []
     feature_names = []
 
+    if include_imu:
+        # # compute motion magnitudes
+        accel_magnitudes = norm(window[:,0:3], axis=1)
+        window = np.concatenate((window, accel_magnitudes[:,np.newaxis]), axis=1)
+        signal_names += ["accel mag"]
+
+        gyro_magnitudes = norm(window[:,3:6], axis=1)
+        window = np.concatenate((window, gyro_magnitudes[:,np.newaxis]), axis=1)
+        signal_names += ["gyro mag"]
+
+        # print(window.shape)
+        # exit()
+
+        # for i in [0, 1, 2, 3, 4, 5, 10, 11]:
+        for i in [-2, -1]:
+            window = add_signal_fft(window[:,i], original_signal_names[i], window, signal_names)
+        # window = add_signal_fft(window[:,1], original_signal_names[i], window, signal_names)
+
+    if include_eog:
+        for i in [9]:
+            window = add_signal_fft(window[:,i], original_signal_names[i], window, signal_names)
+
     if not include_eog:
         window = window[:,:-4]
+        signal_names = signal_names[:-4]
     if not include_imu:
         window = window[:,6:]
+        signal_names = signal_names[6:]
 
-    # # compute motion magnitudes
-    accel_magnitudes = norm(window[:,0:3], axis=1)
-    window = np.concatenate((window, accel_magnitudes[:,np.newaxis]), axis=1)
-    signal_names += ["accel mag"]
-
-    gyro_magnitudes = norm(window[:,3:6], axis=1)
-    window = np.concatenate((window, gyro_magnitudes[:,np.newaxis]), axis=1)
-    signal_names += ["gyro mag"]
 
 
     # compute more signals
-    original_signal_names = signal_names.copy()
     for i in range(len(original_signal_names)):
         # window = add_signal_derivative(window[:,i], original_signal_names[i], window, signal_names)
         # window = add_signal_cumsum(window[:,i], original_signal_names[i], window, signal_names)
@@ -67,15 +83,13 @@ def get_features(window, include_eog=True, include_imu=True):
         pass
 
 
-    # for i in [0, 1, 2, 3, 4, 5, 10, 11]:
-    for i in [9, 10, 11]:
-        window = add_signal_fft(window[:,i], original_signal_names[i], window, signal_names)
-    # window = add_signal_fft(window[:,1], original_signal_names[i], window, signal_names)
-
 
     # compute some features from those signals
     for i in range(len(signal_names)):
-        # print(window.shape)
+        # print("{}/{} {}".format(i, len(signal_names), window.shape))
+        # print(window[:,i])
+        # print(signal_names[i])
+        # exit()
 
         add_mean_crossings(window[:,i], signal_names[i], features, feature_names)
         add_std_dev(window[:,i], signal_names[i], features, feature_names)
