@@ -14,6 +14,7 @@ import re
 import pickle
 
 
+np.random.seed(19680801)
 
 
 data_folder = '../res/'
@@ -83,23 +84,25 @@ def get_num_lines(filename):
 
 
 # save a pickle file
-def save_obj(obj, filename, print_debug_info=True):
-    filename = fix_path(filename)
-    sanitized_name = filename.replace('.pickle', '')
-    with open(sanitized_name + '.pickle', 'wb') as f:
+def save_obj(obj, filename, print_debug_info=True, sanitized=True):
+    if sanitized:
+        filename = fix_path(filename)
+    filename = filename.replace('.pkl', '').replace('.pickle', '')
+    with open(filename + '.pickle', 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
         if print_debug_info:
-            print('Saved {}'.format(sanitized_name + '.pickle'))
+            print('Saved {}'.format(filename + '.pickle'))
 
 
 # load a pickle file
-def load_obj(filename, print_debug_info=True):
-    filename = fix_path(filename)
-    sanitized_name = filename.replace('.pickle', '')
-    with open(sanitized_name + '.pickle', 'rb') as f:
+def load_obj(filename, print_debug_info=True, sanitized=True):
+    if sanitized:
+        filename = fix_path(filename)
+    filename = filename.replace('.pkl', '').replace('.pickle', '')
+    with open(filename + '.pickle', 'rb') as f:
         obj = pickle.load(f)
         if print_debug_info:
-            print('Loaded {}'.format(sanitized_name + '.pickle'))
+            print('Loaded {}'.format(filename + '.pickle'))
         return obj
 
 

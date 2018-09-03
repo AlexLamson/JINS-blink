@@ -1,9 +1,12 @@
+import sys
+sys.path.append('..')
+from util import *
+
 import numpy as np
 import scipy
 from tqdm import tqdm
 import scipy.io
 
-from util import *
 from feature_extractor import get_features
 
 
@@ -40,7 +43,7 @@ def get_data(use_precomputed=False):
 
         else:
             print("loading pickled data")
-            return load_object(filename)
+            return load_obj(filename)
 
     else:
 
@@ -51,9 +54,11 @@ def get_data(use_precomputed=False):
         # is_moving_data = False
 
         X_all_raw = None
+        raw_index = [] # list of tuples containing (subject number, label number, trial index)
         X_all = None
         y_all = []
         groups = []
+
 
 
         # accumulate the data for the all the subjects
@@ -77,6 +82,7 @@ def get_data(use_precomputed=False):
                     # print(X_all_raw.shape)
                     # exit()
                     X_all_raw = np.concatenate((X_all_raw, raw_window[np.newaxis,:,:]), axis=0)
+                    raw_index += [(subject, label, trial)]
 
 
         print("normalizing data")
@@ -100,7 +106,8 @@ def get_data(use_precomputed=False):
 
 
         print("saving raw data")
-        save_object("all_data_raw.pkl", X_all_raw)
+        save_obj("all_data_raw.pkl", (X_all_raw, raw_index))
+        exit()
 
 
         print("extracting features")
@@ -124,7 +131,7 @@ def get_data(use_precomputed=False):
 
 
         print("pickling data")
-        save_object("all_data.pkl", data_blob)
+        save_obj("all_data.pkl", data_blob)
 
         return data_blob
 

@@ -1,3 +1,7 @@
+import sys
+sys.path.append('..')
+from util import *
+
 from tqdm import tqdm
 import itertools
 import numpy as np
@@ -11,7 +15,6 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 
-from util import save_object, load_object
 from prepare_data import get_data
 
 

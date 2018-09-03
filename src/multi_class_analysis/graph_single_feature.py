@@ -1,8 +1,11 @@
+import sys
+sys.path.append('..')
+from util import *
+
 from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
 
-from util import save_object, load_object
 from prepare_data import get_data
 
 

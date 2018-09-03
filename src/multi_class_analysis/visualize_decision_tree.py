@@ -1,9 +1,12 @@
+import sys
+sys.path.append('..')
+from util import *
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 import pydotplus
 
-from util import save_object, load_object
 from prepare_data import get_data
 
 
@@ -40,7 +43,7 @@ y_train = y_test = y_all
 
 # print("fitting decision tree")
 model.fit(X_all, y_all)
-save_object("decision_tree.pkl", model)
+save_obj("decision_tree.pkl", model)
 
 # mean_train_accuracy = model.score(X_train, y_train)
 # print("train accuracy: {:.4f}".format(mean_train_accuracy))

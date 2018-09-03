@@ -1,3 +1,7 @@
+import sys
+sys.path.append('..')
+from util import *
+
 from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt

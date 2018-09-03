@@ -1,3 +1,7 @@
+import sys
+sys.path.append('..')
+from util import *
+
 import numpy as np
 from numpy.linalg import norm
 from scipy.stats import iqr

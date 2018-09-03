@@ -1,3 +1,7 @@
+import sys
+sys.path.append('..')
+from util import *
+
 import numpy as np
 import scipy.io
 from tqdm import tqdm
