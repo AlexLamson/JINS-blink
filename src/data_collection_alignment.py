@@ -8,6 +8,10 @@ from sklearn import preprocessing
 import pickle
 
 
+
+'''
+This is the list of manually labeled blink indices for the head movement data.
+'''
 # filenames = "conv_head_1 conv_head_2 up_down_fast_1 up_down_fast_2 up_down_slow_1 up_down_slow_2 roll_slow_2 roll_slow_1 roll_fast_2 roll_fast_1 left_right_slow_2 left_right_slow_1 left_right_fast_2 left_right_fast_1".split()
 # filename_to_index_list = {
 #     'conv_head_1':[57, 73, 88, 102, 331, 604, 1469, 1604, 1806, 1831, 1885, 2143, 2432, 2737, 2765, 3000, 3570, 3791, 4307, 4339, 4361, 4707, 5666, 5731, 5896, 6045, 6090, 6133, 6347, 6442, 6628, 6821, 7233, 7272, 7741, 7869, 7891, 7921, 7960, 8098, 8130, 8194, 8256, 8366, 8522, 8538, 8778, 8991, 9075, 9111, 9199, 9229, 9311, 9404, 9477, 9526, 9584, 9696, 9750, 9936, 9949, 9960, 9974, 9985],
