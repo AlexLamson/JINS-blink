@@ -13,7 +13,7 @@ vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 '''
 subjects = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]
 labels = [1, 2, 3, 4, 5]
-class_names = "none,eyebrows lower,eyebrows raiser,cheek raiser,nose wrinkler,upper lip raiser,mouth open".split(',')
+class_names = "None,Brow lower,Brow raiser,Cheek raiser,Nose wrinkler,Lip raiser,Mouth open".split(',')
 is_moving_data = True
 include_eog = True
 include_imu = True
