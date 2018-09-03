@@ -128,7 +128,12 @@ print("mean f1 score: {:.5f}".format(np.mean(np.mean(f1_scores, axis=0))))
 
 # save the f1-scores
 print("saving f1 scores")
-f1_score_filename = "f1_scores_stationary.pkl" if is_moving_data else "f1_scores_mobile.pkl"
+motion_string = "mobile" if is_moving_data else "stationary"
+eog_string = "yes_eog" if include_eog else "no_eog"
+imu_string = "yes_imu" if include_imu else "no_imu"
+f1_score_filename = "f1_scores/f1_scores-{}-{}-{}.pkl".format(motion_string, eog_string, imu_string)
+# f1_score_filename = "f1_scores_stationary.pkl" if is_moving_data else "f1_scores_mobile.pkl"
+# save_object(f1_score_filename, np.mean(f1_scores, axis=0))
 save_object(f1_score_filename, f1_scores)
 
 # Visualize the feature importance
