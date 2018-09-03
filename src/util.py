@@ -85,6 +85,9 @@ def get_num_lines(filename):
 
 # save a pickle file
 def save_obj(obj, filename, print_debug_info=True, sanitized=True):
+    if isinstance(obj, str):
+        # fix situation where the args are accidentally flipped by the programmer
+        filename, obj = obj, filename
     if sanitized:
         filename = fix_path(filename)
     filename = filename.replace('.pkl', '').replace('.pickle', '')

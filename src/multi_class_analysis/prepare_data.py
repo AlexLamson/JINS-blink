@@ -106,8 +106,9 @@ def get_data(use_precomputed=False):
 
 
         print("saving raw data")
-        save_obj("all_data_raw.pkl", (X_all_raw, raw_index))
-        exit()
+        raw_index = np.array(raw_index)
+        save_obj((X_all_raw, raw_index), "../../res/all_data_raw.pkl", sanitized=False)
+        # exit()
 
 
         print("extracting features")
