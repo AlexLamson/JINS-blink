@@ -7,16 +7,19 @@ from util import *
 from feature_extractor import get_features
 
 
+'''
+Use the below variables to choose what data to give to the model
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+'''
 subjects = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]
 labels = [1, 2, 3, 4, 5]
 class_names = "none,eyebrows lower,eyebrows raiser,cheek raiser,nose wrinkler,upper lip raiser,mouth open".split(',')
 is_moving_data = True
 include_eog = True
 include_imu = True
-
-
-if __name__ == "__main__":
-    print("This file isn't meant to be run directly. Run train_machine_learning_model.py instead")
+'''
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+'''
 
 
 def get_path(subject_id, label_id, is_moving_data):
@@ -98,7 +101,7 @@ def get_data(use_precomputed=False):
 
         print("extracting features")
         for trial in tqdm(range(X_all_raw.shape[0])):
-            feature_extracted_window, feature_names = get_features(X_all_raw[trial,:,:])
+            feature_extracted_window, feature_names = get_features(X_all_raw[trial,:,:], include_eog, include_imu)
             feature_extracted_window = np.array(feature_extracted_window)
 
             if X_all is None:
@@ -120,3 +123,10 @@ def get_data(use_precomputed=False):
         save_object("all_data.pkl", data_blob)
 
         return data_blob
+
+
+if __name__ == "__main__":
+    # print("This file isn't meant to be run directly. Run train_machine_learning_model.py instead")
+
+    print("Computing data using the following settings:\nstationary:{}\nEOG included:{}\nIMU included:{}".format(not is_moving_data, include_eog, include_imu))
+    get_data(use_precomputed=False)
