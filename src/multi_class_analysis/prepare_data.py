@@ -99,6 +99,10 @@ def get_data(use_precomputed=False):
         X_all_raw[:,:,6:10] = X_all_raw[:,:,6:10] - mean_eog_signals
 
 
+        print("saving raw data")
+        save_object("all_data_raw.pkl", X_all_raw)
+
+
         print("extracting features")
         for trial in tqdm(range(X_all_raw.shape[0])):
             feature_extracted_window, feature_names = get_features(X_all_raw[trial,:,:], include_eog, include_imu)
