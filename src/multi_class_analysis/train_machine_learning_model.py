@@ -160,10 +160,12 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 
+    cm = cm.T
+
     # print(cm)
 
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
+    # plt.title(title)
     plt.colorbar()
     tick_marks = np.arange(len(classes))
     plt.xticks(tick_marks, classes, rotation=45)
@@ -177,11 +179,11 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
                  color="white" if cm[i, j] > thresh else "black")
 
     plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
+    plt.xlabel('True label')
+    plt.ylabel('Predicted label')
 
 
 # Plot normalized confusion matrix
 plt.figure()
-plot_confusion_matrix(cnf_matrix_sum, classes=class_names[:5], normalize=True, title='Normalized confusion matrix')
+plot_confusion_matrix(cnf_matrix_sum, classes=class_names[:5], normalize=True)
 plt.show()
