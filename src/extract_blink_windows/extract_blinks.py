@@ -187,3 +187,4 @@ if __name__ == '__main__':
 
     # output the list of blinks as a csv file
 
+    print("note: this file is still incomplete")
