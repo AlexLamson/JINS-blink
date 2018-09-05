@@ -63,8 +63,8 @@ def guarantee_execution(function, fargs):
 
 
 def fix_path(filename):
-    if "/" in filename or "\\" in filename:
-        return filename
+    # if "/" in filename or "\\" in filename:
+    #     return filename
     if not filename.startswith(data_folder):
         filename = data_folder + filename
     return filename
