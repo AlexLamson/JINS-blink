@@ -17,9 +17,14 @@ vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 subjects = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]
 labels = [1, 2, 3, 4, 5]
 class_names = "None,Brow lower,Brow raiser,Cheek raiser,Nose wrinkler,Lip raiser,Mouth open".split(',')
+
 is_moving_data = True
 include_eog = True
 include_imu = True
+
+load_settings_from_file = True
+if load_settings_from_file:
+    is_moving_data, include_eog, include_imu = np.loadtxt("data_settings.txt").astype(bool)
 '''
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 '''
