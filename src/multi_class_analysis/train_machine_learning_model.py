@@ -21,6 +21,7 @@ from prepare_data import get_data
 use_precomputed = False
 X_all, y_all, groups, feature_names, subjects, labels, class_names, is_moving_data, include_eog, include_imu = get_data(use_precomputed=use_precomputed)
 
+show_graphs = False
 
 # def f1_score(y_test, y_pred, average=None):
 #     pres = []
@@ -138,6 +139,9 @@ f1_score_filename = "f1_scores/f1_scores-{}-{}-{}.pkl".format(motion_string, eog
 # f1_score_filename = "f1_scores_stationary.pkl" if is_moving_data else "f1_scores_mobile.pkl"
 # save_obj(f1_score_filename, np.mean(f1_scores, axis=0))
 save_obj(f1_score_filename, f1_scores)
+
+if not show_graphs:
+    exit()
 
 # Visualize the feature importance
 importance = model.feature_importances_
