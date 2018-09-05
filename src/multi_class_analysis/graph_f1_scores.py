@@ -7,7 +7,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from util import save_obj, load_obj
 from prepare_data import get_data
 
 
@@ -20,8 +19,8 @@ class_names = "None,Brow lower,Brow raiser,Cheek raiser,Nose wrinkler".split(','
 
 
 # Figure 7 - stationary vs mobile
-stationary_scores = load_object("f1_scores/aggregated/f1_scores-stationary-yes_eog-yes_imu.pkl")
-mobile_scores = load_object("f1_scores/aggregated/f1_scores-mobile-yes_eog-yes_imu.pkl")
+stationary_scores = np.mean(load_obj("f1_scores/f1_scores-stationary-yes_eog-yes_imu.pickle"), axis=0)
+mobile_scores = np.mean(load_obj("f1_scores/f1_scores-mobile-yes_eog-yes_imu.pickle"), axis=0)
 
 ax = plt.gca()
 ax.yaxis.grid(True)
@@ -42,9 +41,9 @@ plt.show()
 
 
 # Figure 8 - stationary with different data
-both_scores = load_object("f1_scores/aggregated/f1_scores-stationary-yes_eog-yes_imu.pkl")
-eog_scores = load_object("f1_scores/aggregated/f1_scores-stationary-yes_eog-no_imu.pkl")
-imu_scores = load_object("f1_scores/aggregated/f1_scores-stationary-no_eog-yes_imu.pkl")
+both_scores = np.mean(load_obj("f1_scores/f1_scores-stationary-yes_eog-yes_imu.pickle"), axis=0)
+eog_scores = np.mean(load_obj("f1_scores/f1_scores-stationary-yes_eog-no_imu.pickle"), axis=0)
+imu_scores = np.mean(load_obj("f1_scores/f1_scores-stationary-no_eog-yes_imu.pickle"), axis=0)
 
 ax = plt.gca()
 ax.yaxis.grid(True)
@@ -67,9 +66,9 @@ plt.show()
 
 
 # Figure 9 - mobile with different data
-both_scores = load_object("f1_scores/aggregated/f1_scores-mobile-yes_eog-yes_imu.pkl")
-eog_scores = load_object("f1_scores/aggregated/f1_scores-mobile-yes_eog-no_imu.pkl")
-imu_scores = load_object("f1_scores/aggregated/f1_scores-mobile-no_eog-yes_imu.pkl")
+both_scores = np.mean(load_obj("f1_scores/f1_scores-mobile-yes_eog-yes_imu.pickle"), axis=0)
+eog_scores = np.mean(load_obj("f1_scores/f1_scores-mobile-yes_eog-no_imu.pickle"), axis=0)
+imu_scores = np.mean(load_obj("f1_scores/f1_scores-mobile-no_eog-yes_imu.pickle"), axis=0)
 
 ax = plt.gca()
 ax.yaxis.grid(True)
@@ -96,8 +95,8 @@ plt.show()
 
 
 # Figure 10 c - CDF of f1 scores
-stationary_scores = np.mean(load_object("f1_scores/f1_scores-stationary-yes_eog-yes_imu.pkl"), axis=1)
-mobile_scores = np.mean(load_object("f1_scores/f1_scores-mobile-yes_eog-yes_imu.pkl"), axis=1)
+stationary_scores = np.mean(load_obj("f1_scores/f1_scores-stationary-yes_eog-yes_imu.pickle"), axis=1)
+mobile_scores = np.mean(load_obj("f1_scores/f1_scores-mobile-yes_eog-yes_imu.pickle"), axis=1)
 
 n_bins = 17*2
 fig, ax = plt.subplots(figsize=(8, 4))
