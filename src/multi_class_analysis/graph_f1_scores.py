@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from util import save_object, load_object
+from util import save_obj, load_obj
 from prepare_data import get_data
 
 

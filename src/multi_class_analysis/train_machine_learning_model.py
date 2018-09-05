@@ -136,8 +136,8 @@ eog_string = "yes_eog" if include_eog else "no_eog"
 imu_string = "yes_imu" if include_imu else "no_imu"
 f1_score_filename = "f1_scores/f1_scores-{}-{}-{}.pkl".format(motion_string, eog_string, imu_string)
 # f1_score_filename = "f1_scores_stationary.pkl" if is_moving_data else "f1_scores_mobile.pkl"
-# save_object(f1_score_filename, np.mean(f1_scores, axis=0))
-save_object(f1_score_filename, f1_scores)
+# save_obj(f1_score_filename, np.mean(f1_scores, axis=0))
+save_obj(f1_score_filename, f1_scores)
 
 # Visualize the feature importance
 importance = model.feature_importances_
