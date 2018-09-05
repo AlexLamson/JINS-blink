@@ -44,15 +44,19 @@ def get_features(window, include_eog=True, include_imu=True):
     features = []
     feature_names = []
 
+    if not include_eog:
+        window = window[:,:-4]
+        signal_names = signal_names[:-4]
+
     if include_imu:
         # # compute motion magnitudes
         accel_magnitudes = norm(window[:,0:3], axis=1)
         window = np.concatenate((window, accel_magnitudes[:,np.newaxis]), axis=1)
-        signal_names += ["accel mag"]
+        original_signal_names += ["accel mag"]
 
         gyro_magnitudes = norm(window[:,3:6], axis=1)
         window = np.concatenate((window, gyro_magnitudes[:,np.newaxis]), axis=1)
-        signal_names += ["gyro mag"]
+        original_signal_names += ["gyro mag"]
 
         # print(window.shape)
         # exit()
@@ -66,9 +70,6 @@ def get_features(window, include_eog=True, include_imu=True):
         for i in [9]:
             window = add_signal_fft(window[:,i], original_signal_names[i], window, signal_names)
 
-    if not include_eog:
-        window = window[:,:-4]
-        signal_names = signal_names[:-4]
     if not include_imu:
         window = window[:,6:]
         signal_names = signal_names[6:]
