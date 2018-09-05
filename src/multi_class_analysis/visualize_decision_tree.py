@@ -52,4 +52,4 @@ print("exporting decision tree visualization")
 # feature_names = [str(x) for x in list(range(X_all.shape[1]))]
 dot_data = export_graphviz(model, feature_names=feature_names, class_names=class_names, filled=True, out_file=None)
 graph = pydotplus.graph_from_dot_data(dot_data)
-graph.write_pdf("decision_tree.pdf")
+graph.write_pdf(fix_path("decision_tree.pdf"))
