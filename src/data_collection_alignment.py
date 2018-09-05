@@ -151,12 +151,11 @@ label5_thresholds = {
     '117_label5':0.56
 }
 
-if __name__ == '__main__':
 
-    subject_id = subject_ids[4]
-    path = "C:/Data_Experiment_W!NCE/{}/FACS/label0/".format(subject_id)
-    jins_path = path+"jins/{}_label0.csv".format(subject_id)
-    openface_path = path+"oface/{}_label0.csv".format(subject_id)
+def label_subject(subject_id):
+    path = "C:/Data_Experiment_W!NCE/{}/FACS/label1/".format(subject_id)
+    jins_path = path+"jins/{}_label1.csv".format(subject_id)
+    openface_path = path+"oface/{}_label1.csv".format(subject_id)
     output_path = path+"{}_alignments.pickle".format(subject_id)
 
 
@@ -331,3 +330,9 @@ if __name__ == '__main__':
     # example_jins_frame = openface_frame_to_jins_frame(example_openface_frame)
     # example_jins_frame += 1  # matlab is 1-indexed
     # print("openface -> jins: {} -> {}".format(example_openface_frame, example_jins_frame))
+
+
+if __name__ == '__main__':
+    # subject_id = subject_ids[0]
+    for subject_id in subject_ids:
+        label_subject(subject_id)
