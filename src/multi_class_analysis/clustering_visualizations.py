@@ -49,27 +49,27 @@ plt.title("Dat a=> t-SNE {}->2".format(X_all.shape[1]))
 plt.show()
 
 
-print("reducing dimensions with GMM then PCA")
-plt.figure(3)
-n_components = 6
-gmm = GaussianMixture(n_components=n_components, covariance_type='tied')
-gmm.fit(X_all)
-X_all_reduced = gmm.predict_proba(X_all)
+# print("reducing dimensions with GMM then PCA")
+# plt.figure(3)
+# n_components = 6
+# gmm = GaussianMixture(n_components=n_components, covariance_type='tied')
+# gmm.fit(X_all)
+# X_all_reduced = gmm.predict_proba(X_all)
 
-pca = PCA(n_components=2)
-pca.fit(X_all_reduced)
-X_all_reduced = pca.transform(X_all_reduced)
+# pca = PCA(n_components=2)
+# pca.fit(X_all_reduced)
+# X_all_reduced = pca.transform(X_all_reduced)
 
-X_all_reduced[:,0] = rand_jitter(X_all_reduced[:,0])
-X_all_reduced[:,1] = rand_jitter(X_all_reduced[:,1])
+# X_all_reduced[:,0] = rand_jitter(X_all_reduced[:,0])
+# X_all_reduced[:,1] = rand_jitter(X_all_reduced[:,1])
 
-for i,label in enumerate(labels):
-    mask = np.where(y_all == label)
-    plt.scatter(X_all_reduced[mask,0], X_all_reduced[mask,1], label=class_names[i])
-plt.legend(loc=2)
-plt.set_cmap('hsv')
-plt.title("data => GMM {0}->{1} => PCA {1}->2".format(X_all.shape[1], n_components))
-plt.show()
+# for i,label in enumerate(labels):
+#     mask = np.where(y_all == label)
+#     plt.scatter(X_all_reduced[mask,0], X_all_reduced[mask,1], label=class_names[i])
+# plt.legend(loc=2)
+# plt.set_cmap('hsv')
+# plt.title("data => GMM {0}->{1} => PCA {1}->2".format(X_all.shape[1], n_components))
+# plt.show()
 
 
 
