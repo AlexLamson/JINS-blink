@@ -54,7 +54,7 @@ def get_data(use_precomputed=False):
         # is_moving_data = False
 
         X_all_raw = None
-        raw_index = [] # list of tuples containing (subject number, label number, trial index)
+        raw_index = []  # list of tuples containing (subject number, label number, trial index)
         X_all = None
         y_all = []
         groups = []
