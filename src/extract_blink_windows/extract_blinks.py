@@ -58,9 +58,19 @@ if __name__ == '__main__':
     # load the openface data
     for subject_number in subject_numbers:
         for label_number in label_numbers:
+            start_times_dict_string = '{}_label{}'.format(subject_number, label_number)
+            if start_times_dict_string not in start_times_dict:
+                print("start time missing, skipping...")
+                continue
+            oface_start, jins_start = start_times_dict[start_times_dict_string]
+            if oface_start < 0 or jins_start < 0:
+                print("start time is -1, skipping...")
+                continue
+
+
             openface_path = get_path(subject_number, label_number)
             if not file_exists(openface_path):
-                print("MISSING "+openface_path)
+                print("openface data is missing ('{}'), skipping...".format(openface_path))
                 continue
             openface_df = get_data(openface_path)
             # print(openface_df.shape)
@@ -68,8 +78,6 @@ if __name__ == '__main__':
             # pass
 
 
-            start_times_dict_string = '{}_label{}'.format(subject_number, label_number)
-            oface_start, jins_start = start_times_dict[start_times_dict_string]
             oface_start, jins_start = oface_start-1, jins_start-1  # convert to zero-indexed
 
             # create functions to translate the timestamps between the two
