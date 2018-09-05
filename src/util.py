@@ -18,6 +18,9 @@ np.random.seed(19680801)
 
 
 data_folder = '../res/'
+if not isdir(data_folder) and isdir("../"+data_folder):
+    data_folder = "../"+data_folder
+
 
 of_time_per_jins_time = 1.00610973512302
 
@@ -109,8 +112,9 @@ def load_obj(filename, print_debug_info=True, sanitized=True):
         return obj
 
 
-def file_exists(filename):
-    filename = fix_path(filename)
+def file_exists(filename, sanitized=True):
+    if sanitized:
+        filename = fix_path(filename)
     return isfile(filename)
 
 
