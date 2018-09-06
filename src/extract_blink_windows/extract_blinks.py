@@ -11,6 +11,7 @@ from tqdm import tqdm
 import scipy.io
 from sklearn import preprocessing
 
+from data_collection_merge_data import preprocess_dataframes, trim_by_start_time
 from start_times import start_times_dict
 from label_thresholds import *
 from aggregate_openface_blinks_data import *
@@ -61,7 +62,7 @@ if __name__ == '__main__':
             # get the start times
             start_times_dict_string = '{}_label{}'.format(subject_number, label_number)
             if start_times_dict_string not in start_times_dict:
-                print("({} {}) skipping: start time missing".format(subject_number, label_number))
+                print("({} {}) SKIPPING: start time missing".format(subject_number, label_number))
                 continue
             oface_start, jins_start = start_times_dict[start_times_dict_string]
             if oface_start < 0 or jins_start < 0:
@@ -73,7 +74,7 @@ if __name__ == '__main__':
             # load in the openface data
             openface_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}.csv".format(subject_number, label_number-1)
             if not file_exists(openface_path, sanitized=False):
-                print("MISSING "+openface_path)
+                print("({} {}) SKIPPING: openface file missing".format(subject_number, label_number))
                 continue
             openface_df = pd.read_csv(openface_path)
 
@@ -81,20 +82,25 @@ if __name__ == '__main__':
             # load in the jins data
             jins_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number-1)
             if not file_exists(jins_path, sanitized=False):
-                print("MISSING "+jins_path)
+                print("({} {}) SKIPPING: jins file missing".format(subject_number, label_number))
                 continue
             jins_df = pd.read_csv(jins_path, skiprows=5)
 
 
             # clean up the dataframes
-            from data_collection_merge_data import preprocess_dataframes
+            print("({} {}) LOADED".format(subject_number, label_number))
             jins_df, openface_df = preprocess_dataframes(jins_df, openface_df)
 
 
-            # drop inital frames to align data
-            jins_df.iloc[jins_start:]
+            # drop initial frames to align data
+            oface_start_time = openface_df['TIME'].iloc[oface_start]
+            openface_df = trim_by_start_time(openface_df, oface_start_time)
+            jins_start_time = jins_df['TIME'].iloc[jins_start]
+            jins_df = trim_by_start_time(jins_df, jins_start_time)
+
+
+            # scale the jins data to try to eliminate the time inaccuracy problem
             jins_df['TIME'] *= of_time_per_jins_time
-            openface_df.iloc[oface_start:]
 
 
             # fill in the missing values in the openface data
