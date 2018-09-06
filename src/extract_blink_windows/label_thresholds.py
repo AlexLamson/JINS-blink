@@ -2,7 +2,7 @@
 The thresholds are recording using the derivative of the OpenFace AU45_r signal.
 Anywhere the derivative of AU45_r is higher than the given threshold, treat that as a blink.
 '''
-label0_thresholds = {
+thresholds = {
     '101_label0':0.3,
     '102_label0':0.25,
     '103_label0':0.5,
@@ -19,9 +19,8 @@ label0_thresholds = {
     '114_label0':0.1,
     '115_label0':0.2,
     '116_label0':0.55,
-    '117_label0':0.15
-}
-label1_thresholds = {
+    '117_label0':0.15,
+
     '101_label1':-1,
     '102_label1':-1,
     '103_label1':-1,
@@ -38,9 +37,8 @@ label1_thresholds = {
     '114_label1':-1,
     '115_label1':-1,
     '116_label1':-1,
-    '117_label1':-1
-}
-label2_thresholds = {
+    '117_label1':-1,
+
     '101_label2':-1,
     '102_label2':1.5,
     '103_label2':0.9,
@@ -57,9 +55,8 @@ label2_thresholds = {
     '114_label2':0.82,
     '115_label2':0.64,
     '116_label2':0.93,
-    '117_label2':0.88
-}
-label3_thresholds = {
+    '117_label2':0.88,
+
     '101_label3':-1,
     '102_label3':1.25,
     '103_label3':2.18,
@@ -76,9 +73,8 @@ label3_thresholds = {
     '114_label3':1.4,
     '115_label3':0.93,
     '116_label3':2.12,
-    '117_label3':1.11
-}
-label4_thresholds = {
+    '117_label3':1.11,
+
     '101_label4':-1,
     '102_label4':1.32,
     '103_label4':1.34,
@@ -95,9 +91,8 @@ label4_thresholds = {
     '114_label4':1.0,
     '115_label4':0.87,
     '116_label4':1.19,
-    '117_label4':0.94
-}
-label5_thresholds = {
+    '117_label4':0.94,
+
     '101_label5':0.57,
     '102_label5':1.71,
     '103_label5':1.21,
@@ -114,5 +109,5 @@ label5_thresholds = {
     '114_label5':0.77,
     '115_label5':1.43,
     '116_label5':1.0,
-    '117_label5':0.56
+    '117_label5':0.56,
 }

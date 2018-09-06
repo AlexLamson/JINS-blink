@@ -13,7 +13,7 @@ from sklearn import preprocessing
 
 from data_collection_merge_data import preprocess_dataframes, trim_by_start_time
 from start_times import start_times_dict
-from label_thresholds import *
+from label_thresholds import thresholds
 from aggregate_openface_blinks_data import *
 from aggregate_jins_blinks_data import *
 
