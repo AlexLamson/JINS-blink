@@ -23,22 +23,19 @@ class_names = "None,Brow lower,Brow raiser,Cheek raiser,Nose wrinkler".split(','
 '''
 
 
-def get_openface_path(subject_number, label_number):
-    return "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}.csv".format(subject_number, label_number-1)
+def get_jins_path(subject_number, label_number):
+    return "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number-1)
 
 
-def get_openface_data(openface_path):
-    openface_df = pd.read_csv(openface_path)
-    # print(openface_df)
+def get_jins_data(jins_path):
+    jins_df = pd.read_csv(jins_path, skiprows=5)
 
-    # openface_df = openface_df[['frame','timestamp','AU45_r']]
-    openface_df.columns = openface_df.columns.str.strip()  # columns have leading space, get rid of it
-    openface_df = openface_df.filter(['frame','timestamp','AU45_r'], axis=1)
-    # openface_df = openface_df.set_index('frame')
-    # print(openface_df)
+    jins_df.drop(['//ARTIFACT'], axis=1, inplace=True)
 
-    # of_time_per_jins_time
-    return openface_df
+    jins_df.rename( columns={'NUM': 'frame'}, inplace=True )  # rename the date column to time so it makes sense
+    # jins_df['frame'] *= of_time_per_jins_time
+
+    return jins_df
 
 
 if __name__ == '__main__':
@@ -48,12 +45,12 @@ if __name__ == '__main__':
 
     for subject_number in subject_numbers:
         for label_number in label_numbers:
-            openface_path = get_path(subject_number, label_number)
-            if not file_exists(openface_path):
-                print("MISSING "+openface_path)
+            jins_path = get_path(subject_number, label_number)
+            if not file_exists(jins_path):
+                print("MISSING "+jins_path)
                 continue
-            openface_df = get_openface_data(openface_path)
-            # print(openface_df.shape)
+            jins_df = get_jins_data(jins_path)
+            # print(jins_df.shape)
             # exit()
             # pass
 
