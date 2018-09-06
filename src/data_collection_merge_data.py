@@ -21,9 +21,6 @@ def combine_data(jins_df, of_df, j_start, o_start, j_end, o_end):
         jins_time = normalized_time*(j_end-j_start) + j_start
         return jins_time
 
-    # fix incorrect column dtype
-    jins_df['TIME'] = jins_df['TIME'].astype(float)
-
     # trim the data
     jins_df = jins_df[jins_df['TIME'].between(j_start, j_end, inclusive=True)]
     of_df = of_df[of_df['TIME'].between(o_start, o_end, inclusive=True)]
@@ -60,21 +57,17 @@ def preprocess_dataframes(jins_df, openface_df):
     openface_df.rename( columns={'timestamp': 'TIME'}, inplace=True )  # rename the timestamp column so it's consistent
 
     # cull openface data
-    # keep time, AU45_r (blink regression)
-    openface_cols_to_drop = ['frame', 'face_id', 'confidence', 'success', 'AU01_r', 'AU02_r', 'AU04_r', 'AU05_r',
-                             'AU06_r', 'AU07_r', 'AU09_r', 'AU10_r', 'AU12_r', 'AU14_r', 'AU15_r', 'AU17_r', 'AU20_r', 'AU23_r', 'AU25_r',
-                             'AU26_r', 'AU01_c', 'AU02_c', 'AU04_c', 'AU05_c', 'AU06_c', 'AU07_c', 'AU09_c', 'AU10_c', 'AU12_c', 'AU14_c',
-                             'AU15_c', 'AU17_c', 'AU20_c', 'AU23_c', 'AU25_c', 'AU26_c', 'AU28_c', 'AU45_c']
-    # some columns, like face_id, don't show up in every data set, so make sure we're only dropping cols that exist
-    openface_cols_to_drop = list( set(openface_cols_to_drop) & set(openface_df.columns) )
-    openface_df.drop(openface_cols_to_drop, axis=1, inplace=True)
+    openface_df = openface_df.filter(['frame','TIME','AU45_r'], axis=1)
 
     # cull jins data
-    # keep time and eog
-    jins_cols_to_drop = ['//ARTIFACT', 'NUM', 'ACC_X', 'ACC_Y', 'ACC_Z', 'GYRO_X', 'GYRO_Y', 'GYRO_Z']
+    # keep time, eog, and imu
+    jins_cols_to_drop = ['//ARTIFACT']
     jins_df.drop(jins_cols_to_drop, axis=1, inplace=True)
 
     time_column_to_delta(jins_df)
+
+    # fix incorrect column dtype
+    jins_df['TIME'] = jins_df['TIME'].astype(float)
 
     return jins_df, openface_df
 
