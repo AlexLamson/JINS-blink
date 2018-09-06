@@ -28,6 +28,8 @@ label_names = "None,Brow lower,Brow raiser,Cheek raiser,Nose wrinkler".split(','
 of_time_per_jins_time = 1.00610973512302
 '''
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OPENFACE COLUMNS: frame TIME AU45_r
+JINS COLUMNS: NUM TIME ACC_X ACC_Y ACC_Z GYRO_X GYRO_Y GYRO_Z EOG_L EOG_R EOG_H EOG_V
 '''
 
 
@@ -52,18 +54,6 @@ of_time_per_jins_time = 1.00610973512302
 if __name__ == '__main__':
     print("running main")
 
-    # load the jins data
-    # (X_all_raw, raw_index) = load_obj("../../res/all_data_raw.pkl", sanitized=False)
-    '''
-    raw_index: [subject number, label number, trial number]
-    X_all_raw: [ trial, window frames, sensor channels ]
-    '''
-
-    # print(raw_index.shape)
-
-    # print(raw_index)
-    # exit()
-
     # iterate over all the subjects and labels
     for subject_number in subject_numbers:
         for label_number in label_numbers:
@@ -79,59 +69,68 @@ if __name__ == '__main__':
                 continue
             oface_start, jins_start = oface_start-1, jins_start-1  # convert to zero-indexed
 
-            # load the jins data
-            jins_path = get_jins_path(subject_number, label_number)
-            if not file_exists(jins_path, sanitized=False):
-                print("({} {}) skipping: jins data is missing".format(subject_number, label_number))
-                continue
-            print("({} {}) loading".format(subject_number, label_number))
-            jins_df = get_jins_data(jins_path)  # read the jins file
-            # print(jins_df)
-            # exit()
 
-            # load the openface data
-            openface_path = get_openface_path(subject_number, label_number)
+            # load in the openface data
+            openface_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}.csv".format(subject_number, label_number-1)
             if not file_exists(openface_path, sanitized=False):
-                print("({} {}) skipping: openface data is missing".format(subject_number, label_number))
+                print("MISSING "+openface_path)
                 continue
-            print("({} {}) loading".format(subject_number, label_number))
-            openface_df = get_openface_data(openface_path)  # read the openface file
-            # print(openface_df.shape)
+            openface_df = pd.read_csv(openface_path)
+
+
+            # load in the jins data
+            jins_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number-1)
+            if not file_exists(jins_path, sanitized=False):
+                print("MISSING "+jins_path)
+                continue
+            jins_df = pd.read_csv(jins_path, skiprows=5)
+
+
+            # clean up the dataframes
+            from data_collection_merge_data import preprocess_dataframes
+            jins_df, openface_df = preprocess_dataframes(jins_df, openface_df)
+
+
+            # drop inital frames to align data
+            jins_df.iloc[jins_start:]
+            jins_df['TIME'] *= of_time_per_jins_time
+            openface_df.iloc[oface_start:]
+
+
+            # fill in the missing values in the openface data
+            interpolated_openface_data = np.interp(x=jins_df['TIME'], xp=openface_df['TIME'], fp=openface_df['AU45_r'])
+            jins_df['AU45_r'] = pd.Series(interpolated_openface_data, index=jins_df.index)
+            combined_df = jins_df
+
+            # a=combined_df['AU45_r']
+            # print(a.shape)
+            # a=np.gradient(combined_df['AU45_r'])
+            # print(a.shape)
             # exit()
-            # pass
-
-            a = openface_df['frame'].iloc[-10:]
-            b = jins_df['frame'].iloc[-10:]
-            print("openface: ")
-            print(a)
-            print("jins: ")
-            print(b)
-            exit()
-            pass
 
 
-            # a = openface_df['AU45_r']
-            # print(a)
-            print(openface_df.iloc[oface_start:])
-            exit()
+            '''
+            OPENFACE COLUMNS: frame TIME AU45_r
+            JINS COLUMNS: NUM TIME ACC_X ACC_Y ACC_Z GYRO_X GYRO_Y GYRO_Z EOG_L EOG_R EOG_H EOG_V
+            '''
+            # TODO: normalize the data
 
+            combined_df['EOG_V'] /= np.std(combined_df['EOG_V'])
+            plt.plot(combined_df['TIME'], combined_df['EOG_V'])
+            plt.plot(combined_df['TIME'], combined_df['AU45_r'])
+            plt.show()
 
-
-            # create functions to translate the timestamps between the two
 
             exit()
 
 
-    # for each subject
-    #     for each label
-    #         if it has a threshold (-1 doesn't count)
-    #             find all the positive (negative to positive) crossings
-    #             find all the negative (positive to negative) crossings
-    #             pair them up and take the average of each pair to get the x location of each peak
+    #       find all the positive (negative to positive) crossings
+    #       find all the negative (positive to negative) crossings
+    #       pair them up and take the average of each pair to get the x location of each peak
 
-    #             for each blink point
-    #                 select a window of data starting 6 frames before to 6 frames after
-    #                 save the window to list of windows (keep which subject & label it came from)
+    #       for each blink point
+    #           select a window of data starting 6 frames before to 6 frames after
+    #           save the window to list of windows (keep which subject & label it came from)
 
     # output the list of blinks as a csv file
 
