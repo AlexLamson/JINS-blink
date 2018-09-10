@@ -11,7 +11,7 @@ from tqdm import tqdm
 import scipy.io
 from sklearn import preprocessing
 
-from data_collection_merge_data import preprocess_dataframes, trim_by_start_time
+from data_collection_merge_data import preprocess_dataframes, trim_by_start_time, trim_by_start_frame
 from start_times import start_times_dict
 from label_thresholds import thresholds
 from aggregate_openface_blinks_data import *
@@ -69,21 +69,22 @@ if __name__ == '__main__':
                 print("({} {}) skipping: start time is -1".format(subject_number, label_number))
                 continue
             oface_start, jins_start = oface_start-1, jins_start-1  # convert to zero-indexed
-
+            print("oface_start, jins_start: {} {}".format(oface_start, jins_start))
 
             # load in the openface data
-            openface_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}.csv".format(subject_number, label_number-1)
+            openface_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}.csv".format(subject_number, label_number)
             if not file_exists(openface_path, sanitized=False):
                 print("({} {}) SKIPPING: openface file missing".format(subject_number, label_number))
                 continue
+            print("openface_path: {}".format(openface_path))
             openface_df = pd.read_csv(openface_path)
 
-
             # load in the jins data
-            jins_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number-1)
+            jins_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number)
             if not file_exists(jins_path, sanitized=False):
                 print("({} {}) SKIPPING: jins file missing".format(subject_number, label_number))
                 continue
+            print("jins_path: {}".format(jins_path))
             jins_df = pd.read_csv(jins_path, skiprows=5)
 
 
@@ -93,11 +94,8 @@ if __name__ == '__main__':
 
 
             # drop initial frames to align data
-            oface_start_time = openface_df['TIME'].iloc[oface_start]
-            openface_df = trim_by_start_time(openface_df, oface_start_time)
-            jins_start_time = jins_df['TIME'].iloc[jins_start]
-            jins_df = trim_by_start_time(jins_df, jins_start_time)
-
+            openface_df = trim_by_start_frame(openface_df, oface_start)
+            jins_df = trim_by_start_frame(jins_df, jins_start)
 
             # scale the jins data to try to eliminate the time inaccuracy problem
             jins_df['TIME'] *= of_time_per_jins_time
@@ -117,7 +115,7 @@ if __name__ == '__main__':
 
             '''
             OPENFACE COLUMNS: frame TIME AU45_r
-            JINS COLUMNS: NUM TIME ACC_X ACC_Y ACC_Z GYRO_X GYRO_Y GYRO_Z EOG_L EOG_R EOG_H EOG_V
+            JINS COLUMNS: frame TIME ACC_X ACC_Y ACC_Z GYRO_X GYRO_Y GYRO_Z EOG_L EOG_R EOG_H EOG_V
             '''
             # TODO: normalize the data
 
