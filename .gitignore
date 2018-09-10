@@ -8,6 +8,8 @@ res/
 *.mat
 !categories.mat
 testing/
+!res/blink_frames/README.md
+!res/blink_frames/*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
