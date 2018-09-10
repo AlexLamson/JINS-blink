@@ -24,7 +24,7 @@ vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 '''
 # data_filename = "all_data_raw.pkl"
 subject_numbers = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]
-label_numbers = [1, 2, 3, 4, 5]
+label_numbers = [0, 2, 3, 4, 5]
 label_names = "None,Brow lower,Brow raiser,Cheek raiser,Nose wrinkler".split(',')
 of_time_per_jins_time = 1.00610973512302
 '''
