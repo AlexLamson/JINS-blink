@@ -27,6 +27,13 @@ subject_numbers = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,1
 label_numbers = [0, 2, 3, 4, 5]
 label_names = "None,Brow lower,Brow raiser,Cheek raiser,Nose wrinkler".split(',')
 of_time_per_jins_time = 1.00610973512302
+
+
+def get_openface_path(subject_number, label_number):
+    return "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}.csv".format(subject_number, label_number)
+
+def get_jins_path(subject_number, label_number):
+    return "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number)
 '''
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 OPENFACE COLUMNS: frame TIME AU45_r
@@ -78,7 +85,7 @@ if __name__ == '__main__':
                 openface_df = pd.read_csv(openface_path)
 
             # load in the jins data
-            jins_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number)
+            jins_path = get_jins_path(subject_number, label_number)
             if not file_exists(jins_path, sanitized=False):
                 print("({} {}) SKIPPING: jins file missing".format(subject_number, label_number))
                 continue
