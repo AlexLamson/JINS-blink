@@ -55,23 +55,27 @@ if __name__ == '__main__':
 
             # get the start times
             start_times_dict_string = '{}_label{}'.format(subject_number, label_number)
+            has_start = True
             if start_times_dict_string not in start_times_dict:
-                print("({} {}) SKIPPING: start time missing".format(subject_number, label_number))
-                continue
-            oface_start, jins_start = start_times_dict[start_times_dict_string]
-            if oface_start < 0 or jins_start < 0:
-                print("({} {}) skipping: start time is -1".format(subject_number, label_number))
-                continue
-            oface_start, jins_start = oface_start-1, jins_start-1  # convert to zero-indexed
-            print("oface_start, jins_start: {} {}".format(oface_start, jins_start))
+                print("({} {}) NOTE: start time missing".format(subject_number, label_number))
+                has_start = False
+                # continue
+            else:
+                oface_start, jins_start = start_times_dict[start_times_dict_string]
+                if oface_start < 0 or jins_start < 0:
+                    print("({} {}) SKIPPING: start time is -1".format(subject_number, label_number))
+                    continue
+                oface_start, jins_start = oface_start-1, jins_start-1  # convert to zero-indexed
+                # print("oface_start, jins_start: {} {}".format(oface_start, jins_start))
 
             # load in the openface data
-            openface_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}.csv".format(subject_number, label_number)
-            if not file_exists(openface_path, sanitized=False):
-                print("({} {}) SKIPPING: openface file missing".format(subject_number, label_number))
-                continue
-            print("openface_path: {}".format(openface_path))
-            openface_df = pd.read_csv(openface_path)
+            if has_start:
+                openface_path = get_openface_path(subject_number, label_number)
+                if not file_exists(openface_path, sanitized=False):
+                    print("({} {}) SKIPPING: openface file missing".format(subject_number, label_number))
+                    continue
+                # print("openface_path: {}".format(openface_path))
+                openface_df = pd.read_csv(openface_path)
 
             # load in the jins data
             jins_path = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number)
@@ -83,21 +87,26 @@ if __name__ == '__main__':
 
 
             # clean up the dataframes
-            print("({} {}) LOADED".format(subject_number, label_number))
-            jins_df, openface_df = preprocess_dataframes(jins_df, openface_df)
+            if has_start:
+                print("({} {}) LOADED".format(subject_number, label_number))
+                jins_df, openface_df = preprocess_dataframes(jins_df, openface_df)
+            else:
+                jins_df = preprocess_jins(jins_df)
 
 
             # drop initial frames to align data
-            openface_df = trim_by_start_frame(openface_df, oface_start)
-            jins_df = trim_by_start_frame(jins_df, jins_start)
+            if has_start:
+                openface_df = trim_by_start_frame(openface_df, oface_start)
+                jins_df = trim_by_start_frame(jins_df, jins_start)
 
             # scale the jins data to try to eliminate the time inaccuracy problem
             jins_df['TIME'] *= of_time_per_jins_time
 
 
             # fill in the missing values in the openface data
-            interpolated_openface_data = np.interp(x=jins_df['TIME'], xp=openface_df['TIME'], fp=openface_df['AU45_r'])
-            jins_df['AU45_r'] = pd.Series(interpolated_openface_data, index=jins_df.index)
+            if has_start:
+                interpolated_openface_data = np.interp(x=jins_df['TIME'], xp=openface_df['TIME'], fp=openface_df['AU45_r'])
+                jins_df['AU45_r'] = pd.Series(interpolated_openface_data, index=jins_df.index)
             combined_df = jins_df
 
 
@@ -154,13 +163,15 @@ if __name__ == '__main__':
 
 
 
-                combined_df['AU45_r'] = combined_df['AU45_r'] * 500
+                if has_start:
+                    combined_df['AU45_r'] = combined_df['AU45_r'] * 500
 
-                ax.plot(combined_df['frame'], combined_df['AU45_r'], label="AU45_r")
                 ax.plot(combined_df['frame'], combined_df['EOG_L'], alpha=0.5, label="EOG L")
                 ax.plot(combined_df['frame'], combined_df['EOG_R'], alpha=0.5, label="EOG R")
                 ax.plot(combined_df['frame'], combined_df['EOG_H'], alpha=0.5, label="EOG H")
                 ax.plot(combined_df['frame'], combined_df['EOG_V'], alpha=0.5, label="EOG V")
+                if has_start:
+                    ax.plot(combined_df['frame'], combined_df['AU45_r'], label="AU45_r")
 
                 # 'best'          0
                 # 'upper right'   1
