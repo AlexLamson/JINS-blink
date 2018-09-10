@@ -50,6 +50,23 @@ def time_column_to_delta(jins_df):
         jins_df.at[i, 'TIME'] = i * frame_duration
 
 
+def preprocess_jins(jins_df):
+
+    jins_df.rename( columns={'DATE': 'TIME', 'NUM': 'frame'}, inplace=True )  # rename the date column to time so it makes sense
+
+    # cull jins data
+    # keep time, eog, and imu
+    jins_cols_to_drop = ['//ARTIFACT']
+    jins_df.drop(jins_cols_to_drop, axis=1, inplace=True)
+
+    time_column_to_delta(jins_df)
+
+    # fix incorrect column dtype
+    jins_df['TIME'] = jins_df['TIME'].astype(float)
+
+    return jins_df
+
+
 def preprocess_dataframes(jins_df, openface_df):
 
     jins_df.rename( columns={'DATE': 'TIME', 'NUM': 'frame'}, inplace=True )  # rename the date column to time so it makes sense
