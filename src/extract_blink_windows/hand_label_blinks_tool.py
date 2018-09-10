@@ -166,7 +166,7 @@ if __name__ == '__main__':
                 ax = fig.add_subplot(111)
                 ax.set_xlim(left=0, right=1000)
                 ax.set_ylim(bottom=-2000, top=2000)
-                fig.suptitle("Subject {} label {}".format(subject_number, label_number))
+                fig.suptitle("Subject {} label {} ({})".format(subject_number, label_number, label_names[label_numbers.index(label_number)]))
 
 
 
