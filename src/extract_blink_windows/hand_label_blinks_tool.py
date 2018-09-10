@@ -42,7 +42,7 @@ JINS COLUMNS: NUM TIME ACC_X ACC_Y ACC_Z GYRO_X GYRO_Y GYRO_Z EOG_L EOG_R EOG_H 
 
 
 if __name__ == '__main__':
-    print("running main")
+    # print("running main")
 
     # iterate over all the subjects and labels
     for subject_number in subject_numbers:
@@ -89,7 +89,7 @@ if __name__ == '__main__':
             if not file_exists(jins_path, sanitized=False):
                 print("({} {}) SKIPPING: jins file missing".format(subject_number, label_number))
                 continue
-            print("jins_path: {}".format(jins_path))
+            # print("jins_path: {}".format(jins_path))
             jins_df = pd.read_csv(jins_path, skiprows=5)
 
 
@@ -121,7 +121,7 @@ if __name__ == '__main__':
             # combined_df['AU45_r'] = np.gradient(combined_df['AU45_r'])*scale_factor
             if start_times_dict_string in thresholds:
                 threshold = thresholds[start_times_dict_string]
-                print("threshold is {}".format(threshold))
+                # print("(threshold is {})".format(threshold))
 
 
             # mask = combined_df['AU45_r'] > threshold
@@ -160,7 +160,7 @@ if __name__ == '__main__':
                         print("Click detected at frame {}".format(frame_number))
                         blink_frames.append((frame_number))
 
-                print("plotting data")
+                # print("plotting data")
                 fig = plt.figure(1)
                 fig.canvas.set_window_title("Right click on all the blinks")
                 ax = fig.add_subplot(111)
@@ -215,7 +215,7 @@ if __name__ == '__main__':
                 fig.canvas.mpl_disconnect(cid)
 
                 if len(blink_frames) == 0:
-                    print("[ERROR] 0 points marked, exiting")
+                    print("[EXIT] 0 points marked, exiting")
                     exit()
 
                 return blink_frames
