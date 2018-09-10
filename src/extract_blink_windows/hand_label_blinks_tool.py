@@ -206,6 +206,7 @@ if __name__ == '__main__':
             blink_frames = get_points(combined_df, subject_number, label_number)
             blink_frames = np.array(blink_frames).astype(int)
             print(blink_frames)
+            print("{} blinks collected".format(len(blink_frames)))
             # save_obj(blink_frames, blink_frames_filename)
             print("saving file to {}".format(blink_frames_filename))
             np.savetxt(fix_path(blink_frames_filename), blink_frames, fmt="%d", newline="\r\n")
