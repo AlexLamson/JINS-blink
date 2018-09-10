@@ -99,7 +99,7 @@ thresholds = {
     '104_label5':0.73,
     '105_label5':0.53,
     '106_label5':0.63,
-    '107_label5':1.0,  # file exists, but pretend it doesn't, the data is trash
+    '107_label5':-1,  #1.0 # file exists, but pretend it doesn't, the data is trash
     '108_label5':1.3,
     '109_label5':0.78,
     '110_label5':1.22,
