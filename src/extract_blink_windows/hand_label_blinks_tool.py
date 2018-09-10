@@ -48,8 +48,8 @@ if __name__ == '__main__':
     for subject_number in subject_numbers:
         for label_number in label_numbers:
 
-            # if label_number < 2 or subject_number < 103:
-            #     continue
+            if subject_number == 101:
+                continue
 
 
             # skip subjects that already have had their blinks labeled
