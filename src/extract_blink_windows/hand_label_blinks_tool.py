@@ -30,10 +30,20 @@ of_time_per_jins_time = 1.00610973512302
 
 
 def get_openface_path(subject_number, label_number):
-    return "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}.csv".format(subject_number, label_number)
+    path1 = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}.csv".format(subject_number, label_number)
+    path2 = "C:/Data_Experiment_W!NCE/{0}/label{1}/oface/{0}_label{1}_1.csv".format(subject_number, label_number)
+    if not file_exists(path1, sanitized=False) and file_exists(path2, sanitized=False):
+        return path2
+    return path1
 
 def get_jins_path(subject_number, label_number):
-    return "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number)
+    path1 = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number)
+    path2 = "C:/Data_Experiment_W!NCE/{0}/label{1}/jins/{0}_label{1}_1.csv".format(subject_number, label_number)
+    if not file_exists(path1, sanitized=False) and file_exists(path2, sanitized=False):
+        # print("path2: {}".format(path2))
+        return path2
+    # print("path1: {}".format(path2))
+    return path1
 '''
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 OPENFACE COLUMNS: frame TIME AU45_r
@@ -48,8 +58,19 @@ if __name__ == '__main__':
     for subject_number in subject_numbers:
         for label_number in label_numbers:
 
-            if subject_number == 101:
+
+
+            # if (subject_number == 101 and label_number == 5) or \
+            if (subject_number == 100 and label_number == 5) or \
+                    subject_number == 110 or \
+                    (subject_number == 111 and label_number >= 4) or \
+                    (subject_number == 112 and label_number == 5) or \
+                    (subject_number == 113 and label_number == 2) or \
+                    (subject_number == 114 and label_number == 3):
+                print("({} {}) SKIPPING: hardcoded skip, data wasn't usable".format(subject_number, label_number))
                 continue
+
+
 
 
             # skip subjects that already have had their blinks labeled
@@ -89,7 +110,7 @@ if __name__ == '__main__':
             if not file_exists(jins_path, sanitized=False):
                 print("({} {}) SKIPPING: jins file missing".format(subject_number, label_number))
                 continue
-            # print("jins_path: {}".format(jins_path))
+            print("jins_path: {}".format(jins_path))
             jins_df = pd.read_csv(jins_path, skiprows=5)
 
 
@@ -222,6 +243,7 @@ if __name__ == '__main__':
 
 
             blink_frames = get_points(combined_df, subject_number, label_number)
+            blink_frames = sorted(blink_frames)
             blink_frames = np.array(blink_frames).astype(int)
             print(blink_frames)
             print("{} blinks collected".format(len(blink_frames)))
