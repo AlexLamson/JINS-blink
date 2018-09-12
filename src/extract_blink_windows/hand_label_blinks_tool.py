@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
             # skip subjects that already have had their blinks labeled
             filename_mobile_string = "stationary" if use_stationary else "treadmill"
-            blink_frames_filename = "blink_frames/blink_frames_{}_{}_{}.txt".format(subject_number, label_number, filename_mobile_string)
+            blink_frames_filename = "blink_frames/{2}/blink_frames_{0}_{1}_{2}.txt".format(subject_number, label_number, filename_mobile_string)
             if file_exists(blink_frames_filename):
                 print("({} {}) SKIPPING: blinks already labeled".format(subject_number, label_number))
                 continue
