@@ -178,7 +178,8 @@ if __name__ == '__main__':
                     if event.button == 3:
                         # global blink_frames
                         frame_number = int(np.round(event.xdata))
-                        print("Click detected at frame {} {} {}".format(frame_number, " "*30, "#"*40))
+                        attention_grabber = ("# " if len(blink_frames) % 2 == 0 else " #")
+                        print("Click detected at frame {} {} {}".format(frame_number, " "*30, attention_grabber*20))
                         blink_frames.append((frame_number))
 
                 # print("plotting data")
