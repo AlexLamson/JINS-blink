@@ -27,18 +27,21 @@ subject_numbers = [101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,1
 label_numbers = [0, 2, 3, 4, 5]
 label_names = "None,Brow lower,Brow raiser,Cheek raiser,Nose wrinkler".split(',')
 of_time_per_jins_time = 1.00610973512302
+use_stationary = False  # True = stationary data, False = treadmill data
 
 
-def get_openface_path(subject_number, label_number):
-    path1 = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}.csv".format(subject_number, label_number)
-    path2 = "C:/Data_Experiment_W!NCE/{0}/label{1}/oface/{0}_label{1}_1.csv".format(subject_number, label_number)
+def get_openface_path(subject_number, label_number, use_stationary=True):
+    treadmill_string = "" if use_stationary else "_treadmill"
+    path1 = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/oface/{0}_label{1}{2}.csv".format(subject_number, label_number, treadmill_string)
+    path2 = "C:/Data_Experiment_W!NCE/{0}{2}/label{1}/oface/{0}_label{1}_1.csv".format(subject_number, label_number, "/"+treadmill_string[1:])
     if not file_exists(path1, sanitized=False) and file_exists(path2, sanitized=False):
         return path2
     return path1
 
-def get_jins_path(subject_number, label_number):
-    path1 = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}.csv".format(subject_number, label_number)
-    path2 = "C:/Data_Experiment_W!NCE/{0}/label{1}/jins/{0}_label{1}_1.csv".format(subject_number, label_number)
+def get_jins_path(subject_number, label_number, use_stationary=True):
+    treadmill_string = "" if use_stationary else "_treadmill"
+    path1 = "C:/Data_Experiment_W!NCE/{0}/FACS/label{1}/jins/{0}_label{1}{2}.csv".format(subject_number, label_number, treadmill_string)
+    path2 = "C:/Data_Experiment_W!NCE/{0}{2}/label{1}/jins/{0}_label{1}_1.csv".format(subject_number, label_number, "/"+treadmill_string[1:])
     if not file_exists(path1, sanitized=False) and file_exists(path2, sanitized=False):
         # print("path2: {}".format(path2))
         return path2
@@ -60,21 +63,23 @@ if __name__ == '__main__':
 
 
 
-            # if (subject_number == 101 and label_number == 5) or \
-            if (subject_number == 100 and label_number == 5) or \
-                    subject_number == 110 or \
-                    (subject_number == 111 and label_number >= 4) or \
-                    (subject_number == 112 and label_number == 5) or \
-                    (subject_number == 113 and label_number == 2) or \
-                    (subject_number == 114 and label_number == 3):
-                print("({} {}) SKIPPING: hardcoded skip, data wasn't usable".format(subject_number, label_number))
-                continue
+            if use_stationary:
+                # if (subject_number == 101 and label_number == 5) or \
+                if (subject_number == 100 and label_number == 5) or \
+                        subject_number == 110 or \
+                        (subject_number == 111 and label_number >= 4) or \
+                        (subject_number == 112 and label_number == 5) or \
+                        (subject_number == 113 and label_number == 2) or \
+                        (subject_number == 114 and label_number == 3):
+                    print("({} {}) SKIPPING: hardcoded skip, data wasn't usable".format(subject_number, label_number))
+                    continue
 
 
 
 
             # skip subjects that already have had their blinks labeled
-            blink_frames_filename = "blink_frames/blink_frames_{}_{}.txt".format(subject_number, label_number)
+            filename_mobile_string = "stationary" if use_stationary else "treadmill"
+            blink_frames_filename = "blink_frames/blink_frames_{}_{}_{}.txt".format(subject_number, label_number, filename_mobile_string)
             if file_exists(blink_frames_filename):
                 print("({} {}) SKIPPING: blinks already labeled".format(subject_number, label_number))
                 continue
@@ -82,8 +87,9 @@ if __name__ == '__main__':
 
 
             # get the start times
-            start_times_dict_string = '{}_label{}'.format(subject_number, label_number)
+            start_times_dict_string = '{}_label{}{}'.format(subject_number, label_number, "" if use_stationary else "_treadmill")
             has_start = True
+
             if start_times_dict_string not in start_times_dict:
                 print("({} {}) NOTE: start time missing".format(subject_number, label_number))
                 has_start = False
@@ -98,7 +104,7 @@ if __name__ == '__main__':
 
             # load in the openface data
             if has_start:
-                openface_path = get_openface_path(subject_number, label_number)
+                openface_path = get_openface_path(subject_number, label_number, use_stationary)
                 if not file_exists(openface_path, sanitized=False):
                     print("({} {}) SKIPPING: openface file missing".format(subject_number, label_number))
                     continue
@@ -106,11 +112,11 @@ if __name__ == '__main__':
                 openface_df = pd.read_csv(openface_path)
 
             # load in the jins data
-            jins_path = get_jins_path(subject_number, label_number)
+            jins_path = get_jins_path(subject_number, label_number, use_stationary)
             if not file_exists(jins_path, sanitized=False):
                 print("({} {}) SKIPPING: jins file missing".format(subject_number, label_number))
                 continue
-            print("jins_path: {}".format(jins_path))
+            # print("jins_path: {}".format(jins_path))
             jins_df = pd.read_csv(jins_path, skiprows=5)
 
 
@@ -191,7 +197,8 @@ if __name__ == '__main__':
                 else:
                     ax.set_xlim(left=0, right=1000)
                 ax.set_ylim(bottom=-2000, top=2000)
-                fig.suptitle("Subject {} label {} ({})".format(subject_number, label_number, label_names[label_numbers.index(label_number)]))
+                stationary_string = "Stationary data" if use_stationary else "Treadmill data"
+                fig.suptitle("[{}] Subject {} label {} ({})".format(stationary_string, subject_number, label_number, label_names[label_numbers.index(label_number)]))
 
 
 
