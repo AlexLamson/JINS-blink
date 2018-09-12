@@ -92,7 +92,7 @@ def preprocess_dataframes(jins_df, openface_df):
 def trim_by_start_frame(df, start_frame):
     df = df.drop(range(start_frame))
     df['TIME'] = df['TIME'] - df['TIME'].values[0]
-    df['frame'] = df['frame'] - df['frame'].values[0]
+    # df['frame'] = df['frame'] - df['frame'].values[0]
     fresh_index = np.array(list(range(df.shape[0])))
     df.set_index(fresh_index, inplace=True)
     return df
@@ -101,7 +101,7 @@ def trim_by_start_frame(df, start_frame):
 def trim_by_start_time(df, start_time):
     df = df.drop(df[df['TIME'] < start_time].index)
     df['TIME'] = df['TIME'] - df['TIME'].values[0]
-    df['frame'] = df['frame'] - df['frame'].values[0]
+    # df['frame'] = df['frame'] - df['frame'].values[0]
     fresh_index = np.array(list(range(df.shape[0])))
     df.set_index(fresh_index, inplace=True)
     return df
