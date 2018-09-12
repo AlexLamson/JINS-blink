@@ -3,12 +3,12 @@ How to use set up
 
 There are 4 paths on lines 33, 34, 40, 41. Change those paths to match what you have on your computer. The script will check those paths for files in those paths.
 
+Blink frames are saved to `JINS-blink\res\blink_frames`. It would be a good idea to copy the blink files you already have into there.
+
 Run the script with:
 `python hand_label_blinks_tool.py`
 
-Changing lines 64-69 let you explicitly skip subjects/labels.
-
-Blink frames are saved to `JINS-blink\res\blink_frames`. It would be a good idea to copy the blink files you already have into there.
+Changing lines 64-69 let's you explicitly skip subjects/labels.
 
 
 
