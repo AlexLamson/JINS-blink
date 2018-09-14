@@ -108,6 +108,7 @@ if __name__ == '__main__':
             if start_times_dict_string not in start_times_dict:
                 print("({} {}) NOTE: start time missing".format(subject_number, label_number))
                 has_start = False
+                oface_start, jins_start = 0, 0
                 # continue
             else:
                 oface_start, jins_start = start_times_dict[start_times_dict_string]
@@ -118,13 +119,14 @@ if __name__ == '__main__':
                 # print("oface_start, jins_start: {} {}".format(oface_start, jins_start))
 
             # load in the openface data
-            if has_start:
-                openface_path = get_openface_path(subject_number, label_number, use_stationary)
-                if not file_exists(openface_path, sanitized=False):
-                    print("({} {}) SKIPPING: openface file missing".format(subject_number, label_number))
-                    continue
-                # print("openface_path: {}".format(openface_path))
-                openface_df = pd.read_csv(openface_path)
+            has_openface = True
+            openface_path = get_openface_path(subject_number, label_number, use_stationary)
+            if not file_exists(openface_path, sanitized=False):
+                print("({} {}) NOTE: openface file missing".format(subject_number, label_number))
+                has_openface = False
+                # continue
+            # print("openface_path: {}".format(openface_path))
+            openface_df = pd.read_csv(openface_path)
 
             # load in the jins data
             jins_path = get_jins_path(subject_number, label_number, use_stationary)
@@ -136,15 +138,14 @@ if __name__ == '__main__':
 
 
             # clean up the dataframes
-            if has_start:
-                print("({} {}) LOADED".format(subject_number, label_number))
+            if has_openface:
                 jins_df, openface_df = preprocess_dataframes(jins_df, openface_df)
             else:
                 jins_df = preprocess_jins(jins_df)
 
 
             # drop initial frames to align data
-            if has_start:
+            if has_start and has_openface:
                 openface_df = trim_by_start_frame(openface_df, oface_start)
                 jins_df = trim_by_start_frame(jins_df, jins_start)
 
@@ -153,7 +154,7 @@ if __name__ == '__main__':
 
 
             # fill in the missing values in the openface data
-            if has_start:
+            if has_openface:
                 interpolated_openface_data = np.interp(x=jins_df['TIME'], xp=openface_df['TIME'], fp=openface_df['AU45_r'])
                 jins_df['AU45_r'] = pd.Series(interpolated_openface_data, index=jins_df.index)
             combined_df = jins_df
@@ -171,7 +172,7 @@ if __name__ == '__main__':
             # combined_df['AU45_r'][np.invert(mask)] = 0
 
 
-            # combined_df['AU45_r'] = np.gradient(combined_df['AU45_r'])
+            # combineds_df['AU45_r'] = np.gradient(combined_df['AU45_r'])
             # blink_starts = np.argwhere(combined_df['AU45_r'] > 0).flatten()[0::2]
             # blink_ends = np.argwhere(combined_df['AU45_r'] < 0).flatten()[0::2]
             # blink_pairs = np.array(list(zip(blink_starts, blink_ends)))
@@ -187,6 +188,7 @@ if __name__ == '__main__':
             # exit()
 
 
+            print("({} {}) LOADED".format(subject_number, label_number))
 
 
             def get_points(combined_df, subject_number, label_number):
@@ -217,14 +219,14 @@ if __name__ == '__main__':
 
 
 
-                if has_start:
+                if has_openface:
                     combined_df['AU45_r'] = combined_df['AU45_r'] * 500
 
                 ax.plot(combined_df['frame'], combined_df['EOG_L'], alpha=0.5, label="EOG L")
                 ax.plot(combined_df['frame'], combined_df['EOG_R'], alpha=0.5, label="EOG R")
                 ax.plot(combined_df['frame'], combined_df['EOG_H'], alpha=0.5, label="EOG H")
                 ax.plot(combined_df['frame'], combined_df['EOG_V'], alpha=0.5, label="EOG V")
-                if has_start:
+                if has_openface:
                     ax.plot(combined_df['frame'], combined_df['AU45_r'], label="AU45_r")
 
                 # 'best'          0
