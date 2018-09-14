@@ -73,6 +73,21 @@ if __name__ == '__main__':
                         (subject_number == 114 and label_number == 3):
                     print("({} {}) SKIPPING: hardcoded skip, data wasn't usable".format(subject_number, label_number))
                     continue
+            else:
+                if (subject_number == 102 and label_number == 3) or \
+                        (subject_number == 111 and label_number == 5) or \
+                        (subject_number == 111 and label_number == 4) or \
+                        (subject_number == 111 and label_number == 2) or \
+                        (subject_number == 108 and label_number == 5) or \
+                        (subject_number == 108 and label_number == 4) or \
+                        (subject_number == 108 and label_number == 3) or \
+                        (subject_number == 104 and label_number == 5) or \
+                        (subject_number == 104 and label_number == 2) or \
+                        (subject_number == 103 and label_number == 3) or \
+                        (subject_number == 103 and label_number == 5):
+                    print("({} {}) SKIPPING: hardcoded skip, data wasn't usable".format(subject_number, label_number))
+                    continue
+
 
 
 
